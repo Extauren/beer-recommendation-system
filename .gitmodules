@@ -1,0 +1,3 @@
+[submodule "Backend/JSON_Database"]
+	path = Backend/JSON_Database
+	url = git@github.com:philipperemy/beer-dataset.git
