@@ -11,7 +11,22 @@ def execute_query(connection: CMySQLConnection | MySQLConnection, query: str) ->
         cursor.execute(query)
         connection.commit()
     except Error as err:
-        print(f'Error: {err}', file=sys.stderr)
+        if err.errno == 1146:
+            execute_query(connection, '''CREATE TABLE Beer (
+                                        id INT PRIMARY KEY,
+                                        name VARCHAR(128),
+                                        description VARCHAR(6000),
+                                        abv FLOAT,
+                                        ibu FLOAT,
+                                        icon VARCHAR(256),
+                                        style_description VARCHAR(6000),
+                                        style_name VARCHAR(64),
+                                        type VARCHAR(64)
+                                      )''')
+            cursor.execute(query)
+            connection.commit()
+        else:
+            print(f'Error: {err}', file=sys.stderr)
 
 
 def read_query(connection: CMySQLConnection | MySQLConnection, query: str) -> Optional[list[tuple]]:

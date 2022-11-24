@@ -20,17 +20,18 @@ def init_database() -> None:
                                                                        os.getenv("MYSQL_USER"),
                                                                        os.getenv("MYSQL_PASSWORD"),
                                                                        )
-    print("PAS NORMAL")
     if connection is None:
         sys.exit(1)
     create_database(connection, f'CREATE DATABASE {os.getenv("MYSQL_DATABASE")}')
-    print("avant connection db")
+    create_table()
+
+
+def create_table():
     connection = create_db_connection(os.getenv("MYSQL_HOSTNAME"),
                                       int(os.getenv("MYSQL_PORT")),
                                       os.getenv("MYSQL_USER"),
                                       os.getenv("MYSQL_PASSWORD"),
                                       os.getenv("MYSQL_DATABASE"))
-    print("QUERY")
     execute_query(connection, '''CREATE TABLE Beer (
                                 id INT PRIMARY KEY,
                                 name VARCHAR(128),
