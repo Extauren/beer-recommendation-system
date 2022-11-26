@@ -6,8 +6,8 @@ from mysql.connector import Error, MySQLConnection
 
 
 def create_server_connection(host_name: str, port: int, user_name: str, user_password: str) -> Optional[
-    MySQLConnection | MySQLConnection]:
-    connection: Optional[MySQLConnection | MySQLConnection] = None
+    MySQLConnection]:
+    connection: Optional[MySQLConnection] = None
     try:
         connection = mysql.connector.connect(
             host=host_name,

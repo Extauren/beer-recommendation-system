@@ -11,3 +11,5 @@ ratebeer.txt
 build
 htmlcov
 **/__pycache__/**
+
+venv

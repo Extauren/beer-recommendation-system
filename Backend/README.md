@@ -47,3 +47,12 @@ source venv/bin/activate
 python3 -m pip install -r requirements
 python3 -m src.Scripts.init_database -f < path to the folder that contains the json files >
 ```
+
+## Adminer
+
+```shell
+    server: db
+    user: user
+    password: password
+    database: beer_database
+```

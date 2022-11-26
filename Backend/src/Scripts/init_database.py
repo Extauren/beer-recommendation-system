@@ -15,22 +15,23 @@ from src.Utils.files_utils import get_files_by_extension
 
 
 def init_database() -> None:
-    connection: Optional[MySQLConnection] = create_server_connection(os.getenv("MYSQL_HOSTNAME"),
-                                                                     int(os.getenv("MYSQL_PORT")),
-                                                                     os.getenv("MYSQL_USER"),
-                                                                     os.getenv("MYSQL_PASSWORD"),
-                                                                     )
+    connection: Optional[MySQLConnection] = create_server_connection(os.getenv("MYSQL_HOSTNAME", "localhost"),
+                                                                     int(os.getenv("MYSQL_PORT", 3307)),
+                                                                     os.getenv("MYSQL_USER", "user"),
+                                                                     os.getenv("MYSQL_PASSWORD", "password")
+                                                                    )
     if connection is None:
         sys.exit(1)
     create_database(connection, f'CREATE DATABASE {os.getenv("MYSQL_DATABASE")}')
 
 
 def create_beer_table():
-    connection: Optional[MySQLConnection] = create_db_connection(os.getenv("MYSQL_HOSTNAME"),
-                                                                 int(os.getenv("MYSQL_PORT")),
-                                                                 os.getenv("MYSQL_USER"),
-                                                                 os.getenv("MYSQL_PASSWORD"),
-                                                                 os.getenv("MYSQL_DATABASE"))
+    connection: Optional[MySQLConnection] = create_db_connection(os.getenv("MYSQL_HOSTNAME", "localhost"),
+                                                                 int(os.getenv("MYSQL_PORT", 3307)),
+                                                                 os.getenv("MYSQL_USER", "user"),
+                                                                 os.getenv("MYSQL_PASSWORD", "password"),
+                                                                 os.getenv("MYSQL_DATABASE", "beer_database")
+                                                                )
     execute_query(connection, '''CREATE TABLE Beer (
                                 id INT PRIMARY KEY,
                                 name VARCHAR(128),
@@ -49,7 +50,8 @@ def create_review_table():
                                       int(os.getenv("MYSQL_PORT")),
                                       os.getenv("MYSQL_USER"),
                                       os.getenv("MYSQL_PASSWORD"),
-                                      os.getenv("MYSQL_DATABASE"))
+                                      os.getenv("MYSQL_DATABASE")
+                                     )
     execute_query(connection, '''CREATE TABLE Review (
                                 id INT PRIMARY KEY,
                                 beer_name VARCHAR(128),
@@ -101,11 +103,12 @@ def add_json_to_database(connection: MySQLConnection, files_path: list[str]):
         query = basic_query
 
 
-connect_to_database = lambda: create_db_connection(os.getenv("MYSQL_HOSTNAME"),
-                                                   int(os.getenv("MYSQL_PORT")),
-                                                   os.getenv("MYSQL_USER"),
-                                                   os.getenv("MYSQL_PASSWORD"),
-                                                   os.getenv("MYSQL_DATABASE"))
+connect_to_database = lambda: create_db_connection(os.getenv("MYSQL_HOSTNAME", "localhost"),
+                                                   int(os.getenv("MYSQL_PORT", 3307)),
+                                                   os.getenv("MYSQL_USER", "user"),
+                                                   os.getenv("MYSQL_PASSWORD", "password"),
+                                                   os.getenv("MYSQL_DATABASE", "beer_database")
+                                                  )
 
 
 @click.command()
