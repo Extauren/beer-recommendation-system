@@ -4,6 +4,7 @@
 tmp/
 
 .env
+ratebeer.txt
 
 *.py[cod]
 *.egg
