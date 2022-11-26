@@ -8,13 +8,13 @@ from src.Database.connection import create_db_connection
 
 
 def get_type(survey, connection):
-    return read_query(connection, "SELECT * FROM Beer WHERE `type` = '{}' LIMIT 5".format(survey["type"])) ## delete limit later
+    return read_query(connection, "SELECT * FROM Beer WHERE `type` = '{}'".format(survey["type"]))
 
 def get_abv(survey, connection):
-    return read_query(connection, "SELECT * FROM Beer WHERE `abv` = '{}' LIMIT 5".format(survey["abv"])) ## delete limit later
+    return read_query(connection, "SELECT * FROM Beer WHERE `abv` = '{}'".format(survey["abv"]))
 
 def get_ibu(survey, connection):
-    return read_query(connection, "SELECT * FROM Beer WHERE `ibu` = '{}' LIMIT 5".format(survey["ibu"])) ## delete limit later
+    return read_query(connection, "SELECT * FROM Beer WHERE `ibu` = '{}'".format(survey["ibu"]))
 
 def one_param(survey, connection):
     if "type" in survey:
