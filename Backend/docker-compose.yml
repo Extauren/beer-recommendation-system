@@ -29,5 +29,16 @@ services:
     volumes:
       - beer-recommendation-db:/var/lib/mysql
 
+  adminer:
+    image: adminer:latest
+    restart: always
+    environment:
+      ADMINER_DEFAULT_DB_DRIVER: mysql
+      ADMINER_DEFAULT_DB_HOST: localhost
+      ADMINER_DEFAULT_DB_NAME: beer_database
+      ADMINER_PLUGINS: tables-filter tinymce
+    ports:
+      - 8080:8080
+
 volumes:
   beer-recommendation-db:
