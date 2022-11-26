@@ -1,35 +1,25 @@
 import sys
 from typing import Optional
 
-from mysql.connector import Error, CMySQLConnection, MySQLConnection
+from mysql.connector import Error,  MySQLConnection
 from mysql.connector.cursor_cext import CMySQLCursor
 
+from src.Database.Exceptions import TableNotFound
 
-def execute_query(connection: CMySQLConnection | MySQLConnection, query: str) -> None:
+
+def execute_query(connection:  MySQLConnection, query: str) -> None:
     cursor: CMySQLCursor = connection.cursor()
     try:
         cursor.execute(query)
         connection.commit()
     except Error as err:
         if err.errno == 1146:
-            execute_query(connection, '''CREATE TABLE Beer (
-                                        id INT PRIMARY KEY,
-                                        name VARCHAR(128),
-                                        description VARCHAR(6000),
-                                        abv FLOAT,
-                                        ibu FLOAT,
-                                        icon VARCHAR(256),
-                                        style_description VARCHAR(6000),
-                                        style_name VARCHAR(64),
-                                        type VARCHAR(64)
-                                      )''')
-            cursor.execute(query)
-            connection.commit()
+            raise TableNotFound("")
         else:
             print(f'Error: {err}', file=sys.stderr)
 
 
-def read_query(connection: CMySQLConnection | MySQLConnection, query: str) -> Optional[list[tuple]]:
+def read_query(connection: MySQLConnection, query: str) -> Optional[list[tuple]]:
     cursor: CMySQLCursor = connection.cursor()
     try:
         cursor.execute(query)
