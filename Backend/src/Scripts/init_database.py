@@ -4,9 +4,10 @@ import sys
 from typing import Optional, Any
 
 import click
-from mysql.connector import CMySQLConnection, MySQLConnection
+from mysql.connector import MySQLConnection
 from tqdm import tqdm
 
+from src.Database.Exceptions import TableNotFound
 from src.Database.connection import create_server_connection, create_db_connection
 from src.Database.create_database import create_database
 from src.Database.query import execute_query
@@ -23,7 +24,6 @@ def init_database() -> None:
     if connection is None:
         sys.exit(1)
     create_database(connection, f'CREATE DATABASE {os.getenv("MYSQL_DATABASE")}')
-    create_table()
 
 
 def create_table():
@@ -45,6 +45,23 @@ def create_table():
                               )''')
 
 
+def create_review_table():
+    connection = create_db_connection(os.getenv("MYSQL_HOSTNAME"),
+                                      int(os.getenv("MYSQL_PORT")),
+                                      os.getenv("MYSQL_USER"),
+                                      os.getenv("MYSQL_PASSWORD"),
+                                      os.getenv("MYSQL_DATABASE"))
+    execute_query(connection, '''CREATE TABLE Review (
+                                id INT PRIMARY KEY,
+                                beer_name VARCHAR(128),
+                                appearance INT,
+                                aroma INT,
+                                palate INT,
+                                taste INT,
+                                overall INT
+                              )''')
+
+
 def check_key(values: dict, key: str) -> Optional[Any]:
     return values[key] if key in values else None
 
@@ -53,7 +70,7 @@ def format_text(text: str) -> str:
     return text.replace('\"', '').replace("\\", '')
 
 
-def add_json_to_database(connection: CMySQLConnection | MySQLConnection, files_path: list[str]):
+def add_json_to_database(connection: MySQLConnection, files_path: list[str]):
     basic_query: str = f'''INSERT INTO Beer VALUES '''
     query: str = f'''INSERT INTO Beer VALUES '''
     id: int = 0
@@ -77,7 +94,11 @@ def add_json_to_database(connection: CMySQLConnection | MySQLConnection, files_p
         tmp = list(query)
         tmp[-1] = ';'
         query = "".join(tmp)
-        execute_query(connection, query)
+        try:
+            execute_query(connection, query)
+        except TableNotFound:
+            create_beer_table()
+            execute_query(connection, query)
         query = basic_query
 
 
@@ -93,11 +114,11 @@ connect_to_database = lambda: create_db_connection(os.getenv("MYSQL_HOSTNAME", "
 @click.option("--folder", "-f", help="Folder where the json files are located", required=True, type=str)
 def CLI(folder):
     files_path: list[str] = get_files_by_extension(folder, "json")
-    connection: Optional[CMySQLConnection | MySQLConnection] = connect_to_database()
+    connection: Optional[MySQLConnection] = connect_to_database()
 
-    print(connection, file=sys.stderr)
     if connection is None:
         init_database()
+        create_beer_table()
         connection = connect_to_database()
     if connection is None:
         sys.exit(1)
