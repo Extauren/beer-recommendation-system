@@ -15,8 +15,7 @@ from src.Utils.files_utils import get_files_by_extension
 
 
 def init_database() -> None:
-    connection: Optional[
-        CMySQLConnection | MySQLConnection] = create_server_connection(os.getenv("MYSQL_HOSTNAME", "localhost"),
+    connection: Optional[MySQLConnection] = create_server_connection(os.getenv("MYSQL_HOSTNAME", "localhost"),
                                                                        int(os.getenv("MYSQL_PORT", 3307)),
                                                                        os.getenv("MYSQL_USER", "user"),
                                                                        os.getenv("MYSQL_PASSWORD", "password")
@@ -26,12 +25,12 @@ def init_database() -> None:
     create_database(connection, f'CREATE DATABASE {os.getenv("MYSQL_DATABASE")}')
 
 
-def create_table():
-    connection = create_db_connection(os.getenv("MYSQL_HOSTNAME", "localhost"),
-                                      int(os.getenv("MYSQL_PORT", 3307)),
-                                      os.getenv("MYSQL_USER", "user"),
-                                      os.getenv("MYSQL_PASSWORD", "password"),
-                                      os.getenv("MYSQL_DATABASE", "beer_database"))
+def create_beer_table():
+    connection: Optional[MySQLConnection] = create_db_connection(os.getenv("MYSQL_HOSTNAME", "localhost"),
+                                                                 int(os.getenv("MYSQL_PORT", 3307)),
+                                                                 os.getenv("MYSQL_USER", "user"),
+                                                                 os.getenv("MYSQL_PASSWORD", "password"),
+                                                                 os.getenv("MYSQL_DATABASE", "beer_database"))
     execute_query(connection, '''CREATE TABLE Beer (
                                 id INT PRIMARY KEY,
                                 name VARCHAR(128),
