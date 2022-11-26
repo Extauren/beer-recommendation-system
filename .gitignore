@@ -10,3 +10,5 @@ tmp/
 build
 htmlcov
 **/__pycache__/**
+
+venv

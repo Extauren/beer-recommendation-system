@@ -15,10 +15,10 @@ from src.Utils.files_utils import get_files_by_extension
 
 def init_database() -> None:
     connection: Optional[
-        CMySQLConnection | MySQLConnection] = create_server_connection(os.getenv("MYSQL_HOSTNAME"),
-                                                                       int(os.getenv("MYSQL_PORT")),
-                                                                       os.getenv("MYSQL_USER"),
-                                                                       os.getenv("MYSQL_PASSWORD"),
+        CMySQLConnection | MySQLConnection] = create_server_connection(os.getenv("MYSQL_HOSTNAME", "localhost"),
+                                                                       int(os.getenv("MYSQL_PORT", 3307)),
+                                                                       os.getenv("MYSQL_USER", "user"),
+                                                                       os.getenv("MYSQL_PASSWORD", "password")
                                                                        )
     if connection is None:
         sys.exit(1)
@@ -27,11 +27,11 @@ def init_database() -> None:
 
 
 def create_table():
-    connection = create_db_connection(os.getenv("MYSQL_HOSTNAME"),
-                                      int(os.getenv("MYSQL_PORT")),
-                                      os.getenv("MYSQL_USER"),
-                                      os.getenv("MYSQL_PASSWORD"),
-                                      os.getenv("MYSQL_DATABASE"))
+    connection = create_db_connection(os.getenv("MYSQL_HOSTNAME", "localhost"),
+                                      int(os.getenv("MYSQL_PORT", 3307)),
+                                      os.getenv("MYSQL_USER", "user"),
+                                      os.getenv("MYSQL_PASSWORD", "password"),
+                                      os.getenv("MYSQL_DATABASE", "beer_database"))
     execute_query(connection, '''CREATE TABLE Beer (
                                 id INT PRIMARY KEY,
                                 name VARCHAR(128),
@@ -81,11 +81,12 @@ def add_json_to_database(connection: CMySQLConnection | MySQLConnection, files_p
         query = basic_query
 
 
-connect_to_database = lambda: create_db_connection(os.getenv("MYSQL_HOSTNAME"),
-                                                   int(os.getenv("MYSQL_PORT")),
-                                                   os.getenv("MYSQL_USER"),
-                                                   os.getenv("MYSQL_PASSWORD"),
-                                                   os.getenv("MYSQL_DATABASE"))
+connect_to_database = lambda: create_db_connection(os.getenv("MYSQL_HOSTNAME", "localhost"),
+                                                   int(os.getenv("MYSQL_PORT", 3307)),
+                                                   os.getenv("MYSQL_USER", "user"),
+                                                   os.getenv("MYSQL_PASSWORD", "password"),
+                                                   os.getenv("MYSQL_DATABASE", "beer_database")
+                                                   )
 
 
 @click.command()
