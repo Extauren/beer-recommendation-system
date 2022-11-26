@@ -27,10 +27,10 @@ def init_database() -> None:
 
 def create_beer_table():
     connection: Optional[MySQLConnection] = create_db_connection(os.getenv("MYSQL_HOSTNAME", "localhost"),
-                                                                 int(os.getenv("MYSQL_PORT", 3307)),
-                                                                 os.getenv("MYSQL_USER", "user"),
-                                                                 os.getenv("MYSQL_PASSWORD", "password"),
-                                                                 os.getenv("MYSQL_DATABASE", "beer_database"))
+                                                                int(os.getenv("MYSQL_PORT", 3307)),
+                                                                os.getenv("MYSQL_USER", "user"),
+                                                                os.getenv("MYSQL_PASSWORD", "password"),
+                                                                os.getenv("MYSQL_DATABASE", "beer_database"))
     execute_query(connection, '''CREATE TABLE Beer (
                                 id INT PRIMARY KEY,
                                 name VARCHAR(128),
