@@ -7,8 +7,10 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import Grid from '@mui/material/Grid';
 import Header from './Header';
+import { useNavigate } from 'react-router-dom';
 
 export default function Questionnaire(props: any) {
+    const navigate = useNavigate();
     const [questions, setQuestion] = React.useState<any>(["What type of beer do you want ?", "How much alcool do you want ?", "Do you want organic beer ?"]);
     const [options, setOptions] = React.useState<any>([["Larger", "Stout", "White", "Amber", "IPA", "Fruity"], ["Lite", "Normal", "Strong"], ["Yes", "No"]]);
     const [questionNb, setQuestionNb] = React.useState<number>(0);
@@ -20,11 +22,13 @@ export default function Questionnaire(props: any) {
     const goToNextQuestion = () => {
         if (questionNb < questions.length - 1)
             setQuestionNb(questionNb + 1);
+        else {
+            navigate("/result", {replace: true})
+        }
     }
 
     return (
         <div>
-            <Header/>
             <div className="flex justify-center mt-12">
                 <div className="md:w-2/4 lg:w-2/4 xl:w-1/4 h-80 border-2 rounded-lg shadow-md border-indigo-400">
                     <div className="flex justify-center mt-4 text-xl font-bold">
