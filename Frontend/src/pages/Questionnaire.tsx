@@ -6,7 +6,6 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import Grid from '@mui/material/Grid';
-import Header from './Header';
 import { useNavigate } from 'react-router-dom';
 
 export default function Questionnaire(props: any) {
@@ -29,7 +28,7 @@ export default function Questionnaire(props: any) {
 
     return (
         <div>
-            <div className="flex justify-center mt-12">
+            <div className="flex justify-center mt-32">
                 <div className="md:w-2/4 lg:w-2/4 xl:w-1/4 h-80 border-2 rounded-lg shadow-md border-indigo-400">
                     <div className="flex justify-center mt-4 text-xl font-bold">
                         {questions[questionNb]}
