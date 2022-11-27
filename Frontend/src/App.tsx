@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import Recommendation from './pages/Recommendation';
+import Recommendation from './pages/recommendation/Recommendation';
 import Result from './pages/Result';
 import Layout from './Layout';
 

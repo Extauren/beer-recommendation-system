@@ -1,5 +1,5 @@
 import React from 'react';
-import BeerLogo from './beerLogo.png';
+import BeerLogo from './../assets/beerLogo.png';
 
 
 export default function Header() {
