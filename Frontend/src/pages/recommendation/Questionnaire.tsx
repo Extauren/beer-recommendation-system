@@ -12,15 +12,15 @@ export default function Questionnaire(props: any) {
     const navigate = useNavigate();
     const [questions, setQuestion] = React.useState<any>(["What type of beer do you want ?", "How much alcool do you want ?", "Do you want organic beer ?"]);
     const [options, setOptions] = React.useState<any>([["Larger", "Stout", "White", "Amber", "IPA", "Fruity"], ["Lite", "Normal", "Strong"], ["Yes", "No"]]);
-    const [questionNb, setQuestionNb] = React.useState<number>(0);
+    //const [questionNb, setQuestionNb] = React.useState<number>(0);
 
     const sendAnswer = () => {
 
     }
 
     const goToNextQuestion = () => {
-        if (questionNb < questions.length - 1)
-            setQuestionNb(questionNb + 1);
+        if (props.questionNb < questions.length - 1)
+            props.setQuestionNb(props.questionNb + 1);
         else {
             navigate("/result", {replace: true})
         }
@@ -29,9 +29,9 @@ export default function Questionnaire(props: any) {
     return (
         <div>
             <div className="flex justify-center mt-32">
-                <div className="md:w-2/4 lg:w-2/4 xl:w-1/4 h-80 border-2 rounded-lg shadow-md border-indigo-400">
+                <div className="w-full h-80 border-2 rounded-lg shadow-md border-indigo-400">
                     <div className="flex justify-center mt-4 text-xl font-bold">
-                        {questions[questionNb]}
+                        {questions[props.questionNb]}
                     </div>
                     <div className="flex justify-center mt-12">
                         <FormGroup>
@@ -45,7 +45,7 @@ export default function Questionnaire(props: any) {
                                     columns={{xs: 2, md: 2, xl: 2}}
                                     className="flex justify-center"
                                 >
-                                {options[questionNb].map((option: string, index: number) => (
+                                {options[props.questionNb].map((option: string, index: number) => (
                                     <Grid item key={index}>
                                         <FormControlLabel 
                                             value={option} 
@@ -66,7 +66,7 @@ export default function Questionnaire(props: any) {
                             onClick={goToNextQuestion}
                             className="top-20"
                         >
-                            {questionNb === (questions.length - 1) ?
+                            {props.questionNb === (questions.length - 1) ?
                                 <p>Get my Beer</p>
                             :
                                 <p>Next question</p>
