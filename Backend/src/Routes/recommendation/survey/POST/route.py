@@ -17,6 +17,7 @@ def get_ibu(survey, connection):
     return read_query(connection, "SELECT * FROM Beer WHERE `ibu` = '{}'".format(survey["ibu"]))
 
 def one_param(survey, connection):
+    db_list = None
     if "type" in survey:
         db_list = get_type(survey, connection)
     elif "abv" in survey:
@@ -33,7 +34,7 @@ def recommendation_post():
     recommended_beer_list = []
     survey = request.get_json(force=True)
 
-    connection = create_db_connection("db", "3306", "user", "password", "beer_database")
+    connection = create_db_connection("db", 3306, "user", "password", "beer_database")
 
     if len(survey) == 1:
         return one_param(survey, connection)

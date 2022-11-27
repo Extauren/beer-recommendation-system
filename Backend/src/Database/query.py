@@ -6,7 +6,15 @@ from mysql.connector import Error
 
 from src.Database.Exceptions import TableNotFound
 
+
 def execute_query(connection, query: str) -> None:
+    """
+    It executes a query and commits the changes to the database
+
+    Args:
+      connection: The connection to the database.
+      query (str): The query to execute.
+    """
     cursor = connection.cursor()
     try:
         cursor.execute(query)
@@ -19,6 +27,16 @@ def execute_query(connection, query: str) -> None:
 
 
 def read_query(connection, query: str) -> Optional[list[tuple]]:
+    """
+    It executes a query and returns the result
+
+    Args:
+      connection: The connection to the database.
+      query (str): The query to execute.
+
+    Returns:
+      A list of tuples.
+    """
     cursor = connection.cursor()
     try:
         cursor.execute(query)
