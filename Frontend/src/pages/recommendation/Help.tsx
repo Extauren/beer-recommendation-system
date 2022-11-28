@@ -37,8 +37,8 @@ export default function Help(props: any) {
         ]]);
 
     return (
-        <div className="mt-12 absolute 2xl:ml-32">
-            <h1 className="ml-72 mb-12 font-bold text-2xl">Help</h1>
+        <div className="mt-32 absolute 2xl:ml-32">
+            {/* <h1 className="ml-72 mb-12 font-bold text-2xl">Help</h1> */}
             <Grid
                 container 
                 spacing={{xs: 3, md: 3, xl: 3}}
