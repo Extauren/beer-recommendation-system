@@ -46,13 +46,14 @@ docker-compose up -d db
 source venv/bin/activate
 python3 -m pip install -r requirements
 python3 -m src.Scripts.init_database -f < path to the folder that contains the json files >
+python3 -m src.Scripts.populate_review_db -f < path to the .txt file that contains reviews >
 ```
 
 ## Adminer
 
-```shell
+```txt
     server: db
-    user: user
-    password: password
-    database: beer_database
+    user: same as the value in .env file
+    password: same as the value in .env file
+    database: same as the value in .env file
 ```
