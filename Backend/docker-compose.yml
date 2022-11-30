@@ -32,6 +32,8 @@ services:
   adminer:
     image: adminer:latest
     restart: always
+    depends_on:
+      - db
     environment:
       ADMINER_DEFAULT_DB_DRIVER: mysql
       ADMINER_DEFAULT_DB_HOST: localhost

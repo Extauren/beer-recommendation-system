@@ -48,8 +48,8 @@ def CLI(file):
 
     if connection is None:
         init_database()
-        create_review_table()
         connection = connect_to_database()
+        create_review_table(connection)
     if connection is None:
         sys.exit(1)
     with open(file, errors='ignore') as f:
