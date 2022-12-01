@@ -5,7 +5,7 @@ export default function Help(props: any) {
     const [help, setHelp] = React.useState<any>([
         [
             {
-                "title": "Larger",
+                "title": "Lager",
                 "message": "Lagers are a newer style of beer with two key differences from ales. Lagers ferment for a long time at a low temperature, and they rely on bottom-fermenting yeasts, which sink to the bottom of the fermenting tank to do their magic. Lagers are common among European countries, including Czechia, Germany, and the Netherlands, as well as in Canada, where they make up more than half of all beer sales."
             }, {
                 "title": "Stout",
@@ -13,6 +13,9 @@ export default function Help(props: any) {
             }, {
                 "title": "India Pale Ale (IPA)",
                 "message": "Originally, India Pale Ale or IPA was a British pale ale brewed with extra hops. High levels of this bittering agent made the beer stable enough to survive the long boat trip to India without spoiling. The extra dose of hops gives IPA beers their bitter taste. Depending on the style of hops used, IPAs may have fruit-forward citrus flavors or taste of resin and pine. American brewers have taken the IPA style and run with it, introducing unusual flavors and ingredients to satisfy U.S. beer drinkers' love for the brew style."
+            }, {
+                "title": "White",
+                "message": "An easy-drinking, light style of beer, wheat beers are known for a soft, smooth flavor and a hazy body. Wheat beers tend to taste like spices or citrus, with the hefeweizen or unfiltered wheat beer being one of the more common styles."
             }
         ],
         [

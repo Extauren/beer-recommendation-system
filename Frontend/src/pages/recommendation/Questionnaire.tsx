@@ -1,6 +1,7 @@
 import React from 'react';
 import Button from '@mui/material/Button';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Radio from '@mui/material/Radio';
@@ -13,8 +14,12 @@ import { color } from 'd3-color';
 
 export default function Questionnaire(props: any) {
     const navigate = useNavigate();
-    const [questions, setQuestion] = React.useState<any>(["What type of beer do you want ?", "How much alcool do you want ?", "Do you want organic beer ?"]);
-    const [options, setOptions] = React.useState<any>([["Larger", "Stout", "White", "Amber", "IPA", "Fruity"], ["Lite", "Normal", "Strong"], ["Yes", "No"]]);
+    const [questions, setQuestion] = React.useState<any>(["What type of beer do you want ?", "How much alcohol do you want ?", "Do you want organic beer ?"]);
+    const [options, setOptions] = React.useState<any>([["Lager", "Stout", "White", "Amber", "IPA", "Fruity"], ["Lite", "Normal", "Strong"], ["Yes", "No"]]);
+    const [beerType, setBeerType] = React.useState<string>("");
+    const [alcohol, setAlcohol] = React.useState<string>("");
+    const [isOrganic, setIsOrganinc] = React.useState<string>("")
+    const formFunctions = React.useState<Array<React.Dispatch<React.SetStateAction<string>>>>([setBeerType, setAlcohol, setIsOrganinc]);
     const [radius, setRadius] = React.useState<number>(550);
     const [value, setValue] = React.useState<number>(100 / questions.length);
     const [test, setTest] = React.useState<number>(100 / questions.length - 5);
@@ -41,12 +46,16 @@ export default function Questionnaire(props: any) {
         }
     ];
 
-    React.useEffect(() => {
-        console.log(value);
-    }, [])
+    const getBeer = () => {
+        const result = {'beerType': beerType, 'abv': alcohol, 'isOrganic': isOrganic};
+        navigate("/result", {replace: true, state: result})
+    }
 
-    const sendAnswer = () => {
-
+    const goToPrevQuestion = () => {
+        if (props.questionNb > 0) {
+            props.setQuestionNb(props.questionNb - 1);
+            setValue(value - test);
+        }
     }
 
     const goToNextQuestion = () => {
@@ -55,14 +64,14 @@ export default function Questionnaire(props: any) {
             setValue(value + test);
         }
         else {
-            navigate("/result", {replace: true})
+            getBeer();
         }
     }
 
     return (
         <div className="flex justify-center mt-32">
-            <div className="border-0 rounded-lg border-indigo-400 z-10">
-                <div className="bottom-28 left-12 w-3/4 h-80 absolute z-10">
+            <div className="">
+                <div className="bottom-28 left-12 w-3/4 h-80 absolute z-10 ml-6">
                     <div className="flex justify-center mt-4 text-xl font-bold">
                         {questions[props.questionNb]}
                     </div>
@@ -71,26 +80,43 @@ export default function Questionnaire(props: any) {
                             <RadioGroup
                                aria-labelledby="demo-radio-buttons-group-label"
                                name="radio-buttons-group"
-                           >
-                               <Grid
+                            >
+                                <Grid
                                    container 
                                    spacing={{xs: 3, md: 3, xl: 3}}
                                    columns={{xs: 2, md: 2, xl: 2}}
                                    className="flex justify-center"
-                               >
-                               {options[props.questionNb].map((option: string, index: number) => (
-                                   <Grid item key={index}>
-                                       <FormControlLabel 
-                                           value={option} 
-                                           control={<Radio/>} 
-                                           label={option}
-                                       />
-                                   </Grid>
-                               ))}
-                               </Grid>
-                           </RadioGroup>
+                                >
+                                    {options[props.questionNb].map((option: string, index: number) => (
+                                        <Grid item key={index}>
+                                            <FormControlLabel
+                                                value={option}
+                                                control={<Radio/>}
+                                                label={option}
+                                                onChange={e => formFunctions[0][props.questionNb](option)}
+                                            />
+                                        </Grid>
+                                    ))}
+                                </Grid>
+                            </RadioGroup>
                         </FormGroup>
                     </div>
+                    { props.questionNb > 0 &&
+                        <div className="absolute left-4 bottom-4">
+                            <Button
+                                variant="outlined" 
+                                startIcon={<ArrowBackIosIcon />}
+                                onClick={goToPrevQuestion}
+                                style={{
+                                    backgroundColor: "#21b6a818cf8",
+                                    // padding: "18px 36px",
+                                    // fontSize: "18px"
+                                }}
+                            >
+                                <p>Prev</p>
+                            </Button>
+                        </div>
+                    }
                     <div className="absolute right-4 bottom-4">
                         <Button
                             variant="outlined" 
@@ -110,9 +136,9 @@ export default function Questionnaire(props: any) {
                         </Button>
                     </div>
                 </div>
-                <div className="">
+                <div className="z-0">
                     <LiquidFillGauge
-                        //style={{ margin: '0 auto' }}
+                        style={{ margin: '0 auto' }}
                         width={radius * 1}
                         height={radius * 1}
                         value={value}
@@ -158,158 +184,7 @@ export default function Questionnaire(props: any) {
                         }}
                     />
                 </div>
-                {/* <div className="z-10">
-                    <div className="flex justify-center mt-4 text-xl font-bold">
-                        {questions[props.questionNb]}
-                    </div>
-                    <div className="flex justify-center mt-12">
-                        <FormGroup>
-                            <RadioGroup
-                               aria-labelledby="demo-radio-buttons-group-label"
-                               name="radio-buttons-group"
-                           >
-                               <Grid
-                                   container 
-                                   spacing={{xs: 3, md: 3, xl: 3}}
-                                   columns={{xs: 2, md: 2, xl: 2}}
-                                   className="flex justify-center"
-                               >
-                               {options[props.questionNb].map((option: string, index: number) => (
-                                   <Grid item key={index}>
-                                       <FormControlLabel 
-                                           value={option} 
-                                           control={<Radio/>} 
-                                           label={option}
-                                       />
-                                   </Grid>
-                               ))}
-                               </Grid>
-                           </RadioGroup>
-                        </FormGroup>
-                    </div>
-                    <div className="absolute right-4 bottom-4">
-                        <Button
-                            variant="outlined" 
-                            endIcon={<ArrowForwardIosIcon />}
-                            onClick={goToNextQuestion}
-                            style={{
-                                backgroundColor: "#21b6a818cf8",
-                                // padding: "18px 36px",
-                                // fontSize: "18px"
-                            }}
-                        >
-                            {props.questionNb === (questions.length - 1) ?
-                                <p>Get my Beer</p>
-                            :
-                                <p>Next</p>
-                            }
-                        </Button>
-                    </div>
-                </div> */}
             </div>
         </div>
     )
 }
-        // {/* // <div>
-        // //     <div className="flex justify-center mt-32">
-        // //         <div className="w-full h-80 border-2 rounded-lg shadow-md border-indigo-400">
-        // //             <div className="absolute h-80 z-0 overflow-hidden">
-        // //             <LiquidFillGauge
-        // //                     style={{ margin: '0 auto' }}
-        // //                     width={radius * 1}
-        // //                     height={radius * 1}
-        // //                     value={value}
-        // //                     textSize={0}
-        // //                     textOffsetX={0}
-        // //                     textOffsetY={0}
-        // //                     textRenderer={(props: any) => {
-        // //                         const value = Math.round(props.value);
-        // //                         const radius = Math.min(props.height / 2, props.width / 2);
-        // //                         const textPixels = (props.textSize * radius / 2);
-        // //                         const valueStyle = {
-        // //                             fontSize: textPixels
-        // //                         };
-        // //                         const percentStyle = {
-        // //                             fontSize: textPixels * 0.6
-        // //                         };
-
-        // //                         return (
-        // //                             <tspan>
-        // //                                 <tspan className="value" style={valueStyle}>{value}</tspan>
-        // //                                 <tspan style={percentStyle}>{props.percent}</tspan>
-        // //                             </tspan>
-        // //                         );
-        // //                     }}
-        // //                     riseAnimation
-        // //                     waveAnimation
-        // //                     waveFrequency={2}
-        // //                     waveAmplitude={1}
-        // //                     gradient
-        // //                     gradientStops={gradientStops}
-        // //                     circleStyle={{
-        // //                         fill: "#F8FAFC"
-        // //                     }}
-        // //                     waveStyle={{
-        // //                         fill: fillColor
-        // //                     }}
-        // //                     textStyle={{
-        // //                         fill: color('#444').toString(),
-        // //                         fontFamily: 'Arial'
-        // //                     }}
-        // //                     waveTextStyle={{
-        // //                         fill: color('#fff').toString(),
-        // //                         fontFamily: 'Arial'
-        // //                     }}
-        // //                 />
-        // //             </div>
-        // //             <div className="z-10">
-        // //                 <div className="flex justify-center mt-4 text-xl font-bold z-10">
-        // //                     {questions[props.questionNb]}
-        // //                 </div>
-        // //             <div className="flex justify-center mt-12">
-        // //                 <FormGroup>
-        // //                     <RadioGroup
-        // //                         aria-labelledby="demo-radio-buttons-group-label"
-        // //                         name="radio-buttons-group"
-        // //                     >
-        // //                         <Grid
-        // //                             container 
-        // //                             spacing={{xs: 3, md: 3, xl: 3}}
-        // //                             columns={{xs: 2, md: 2, xl: 2}}
-        // //                             className="flex justify-center"
-        // //                         >
-        // //                         {options[props.questionNb].map((option: string, index: number) => (
-        // //                             <Grid item key={index}>
-        // //                                 <FormControlLabel 
-        // //                                     value={option} 
-        // //                                     control={<Radio/>} 
-        // //                                     label={option}
-        // //                                 />
-        // //                             </Grid>
-        // //                         ))}
-        // //                         </Grid>
-        // //                     </RadioGroup>
-        // //                 </FormGroup>
-        // //             </div>
-        // //             <div className="absolute right-4 bottom-4">
-        // //                 <Button
-        // //                     variant="outlined" 
-        // //                     endIcon={<ArrowForwardIosIcon />}
-        // //                     onClick={goToNextQuestion}
-        // //                     style={{
-        // //                         backgroundColor: "#21b6a818cf8",
-        // //                         // padding: "18px 36px",
-        // //                         // fontSize: "18px"
-        // //                     }}
-        // //                 >
-        // //                     {props.questionNb === (questions.length - 1) ?
-        // //                         <p>Get my Beer</p>
-        // //                     :
-        // //                         <p>Next</p>
-        // //                     }
-        // //                 </Button>
-        // //             </div>
-        // //             </div>
-        // //         </div>
-        // //     </div>
-        // // </div> */}
