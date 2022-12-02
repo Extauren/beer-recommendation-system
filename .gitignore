@@ -4,9 +4,12 @@
 tmp/
 
 .env
+ratebeer.txt
 
 *.py[cod]
 *.egg
 build
 htmlcov
 **/__pycache__/**
+
+venv

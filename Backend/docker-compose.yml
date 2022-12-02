@@ -9,7 +9,7 @@ services:
     env_file:
       - .env
     ports:
-      - "5000:5000"
+      - "3000:3000"
     volumes:
       - ./src:/app/src:ro
     depends_on:
@@ -28,6 +28,19 @@ services:
       - '3306'
     volumes:
       - beer-recommendation-db:/var/lib/mysql
+
+  adminer:
+    image: adminer:latest
+    restart: always
+    depends_on:
+      - db
+    environment:
+      ADMINER_DEFAULT_DB_DRIVER: mysql
+      ADMINER_DEFAULT_DB_HOST: localhost
+      ADMINER_DEFAULT_DB_NAME: beer_database
+      ADMINER_PLUGINS: tables-filter tinymce
+    ports:
+      - 8080:8080
 
 volumes:
   beer-recommendation-db:

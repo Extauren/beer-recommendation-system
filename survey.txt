@@ -1,0 +1,6 @@
+We'll ask for:
+    - ABV % (min? max? specific %?)
+    - IBU scale (min? max? specific IBU?)
+    - SRM scale (min? max? specific SRM?)
+    - Avaibility (seasonal? round year?)
+    - Type of beer (fruit? american? european?)
