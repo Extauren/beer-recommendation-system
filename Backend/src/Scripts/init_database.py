@@ -22,7 +22,7 @@ def init_database() -> None:
                                                                      )
     if connection is None:
         sys.exit(1)
-    create_database(connection, f'CREATE DATABASE {os.getenv("MYSQL_DATABASE")}')
+    create_database(connection, f'CREATE DATABASE {os.getenv("MYSQL_DATABASE", "beer_database")}')
 
 
 def create_beer_table(connection: MySQLConnection) -> None:
@@ -109,12 +109,12 @@ def add_json_to_database(connection: MySQLConnection, files_path: list[str]):
         eval_query = basic_eval_query
 
 
-connect_to_database = lambda: create_db_connection(os.getenv("MYSQL_HOSTNAME"),
-                                                   int(os.getenv("MYSQL_PORT")),
-                                                   os.getenv("MYSQL_USER"),
-                                                   os.getenv("MYSQL_PASSWORD"),
-                                                   os.getenv("MYSQL_DATABASE")
-                                                   )
+connect_to_database = lambda: create_db_connection(os.getenv("MYSQL_HOSTNAME", "localhost"),
+                                                   int(os.getenv("MYSQL_PORT", 3307)),
+                                                   os.getenv("MYSQL_USER", "user"),
+                                                   os.getenv("MYSQL_PASSWORD", "password"),
+                                                   os.getenv("MYSQL_DATABASE", "beer_database")
+                                                  )
 
 
 @click.command()
