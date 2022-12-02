@@ -20,4 +20,7 @@ def recommendation_user_evaluation_post():
         frequency_penalty=0.5,
         presence_penalty=0.0
     )
-    return response, 201
+    return response["choices"][0]["text"][1:], 201
+
+def add_evaluation_to_beer():
+    pass
