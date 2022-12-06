@@ -11,6 +11,8 @@ import { useNavigate } from 'react-router-dom';
 import LiquidFillGauge from 'react-liquid-gauge';
 import { interpolateRgb } from 'd3-interpolate';
 import { color } from 'd3-color';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import axios from 'axios';
 
 export default function Questionnaire(props: any) {
     const navigate = useNavigate();
@@ -46,9 +48,23 @@ export default function Questionnaire(props: any) {
         }
     ];
 
+    const theme = createTheme({
+      palette: {
+        primary: {
+          main: '#818cf8',
+        },
+      },
+    });
+
     const getBeer = () => {
-        const result = {'beerType': beerType, 'abv': alcohol, 'isOrganic': isOrganic};
-        navigate("/result", {replace: true, state: result})
+        axios.post("/recommendation", {
+            "type": beerType, "organic": "0", "abvMin": "3", "abvMax": "7"
+        }).then((result: any) => {
+            // console.log(result.data);
+            navigate("/result", {replace: false, state: {'result': result.data}});
+        }).catch((error: any) => {
+            console.log(error)
+        });
     }
 
     const goToPrevQuestion = () => {
@@ -77,63 +93,59 @@ export default function Questionnaire(props: any) {
                     </div>
                     <div className="flex justify-center mt-12">
                         <FormGroup>
-                            <RadioGroup
-                               aria-labelledby="demo-radio-buttons-group-label"
-                               name="radio-buttons-group"
-                            >
-                                <Grid
-                                   container 
-                                   spacing={{xs: 3, md: 3, xl: 3}}
-                                   columns={{xs: 2, md: 2, xl: 2}}
-                                   className="flex justify-center"
+                            <ThemeProvider theme={theme}>
+                                <RadioGroup
+                                   aria-labelledby="demo-radio-buttons-group-label"
+                                   name="radio-buttons-group"
                                 >
-                                    {options[props.questionNb].map((option: string, index: number) => (
-                                        <Grid item key={index}>
-                                            <FormControlLabel
-                                                value={option}
-                                                control={<Radio/>}
-                                                label={option}
-                                                onChange={e => formFunctions[0][props.questionNb](option)}
-                                            />
-                                        </Grid>
-                                    ))}
-                                </Grid>
-                            </RadioGroup>
+                                    <Grid
+                                       container 
+                                       spacing={{xs: 3, md: 3, xl: 3}}
+                                       columns={{xs: 2, md: 2, xl: 2}}
+                                       className="flex justify-center"
+                                    >
+                                        {options[props.questionNb].map((option: string, index: number) => (
+                                            <Grid item key={index}>
+                                                <FormControlLabel
+                                                    value={option}
+                                                    control={<Radio/>}
+                                                    label={option}
+                                                    onChange={e => formFunctions[0][props.questionNb](option)}
+                                                />
+                                            </Grid>
+                                        ))}
+                                    </Grid>
+                                </RadioGroup>
+                            </ThemeProvider>
                         </FormGroup>
                     </div>
                     { props.questionNb > 0 &&
                         <div className="absolute left-4 bottom-4">
-                            <Button
-                                variant="outlined" 
-                                startIcon={<ArrowBackIosIcon />}
-                                onClick={goToPrevQuestion}
-                                style={{
-                                    backgroundColor: "#21b6a818cf8",
-                                    // padding: "18px 36px",
-                                    // fontSize: "18px"
-                                }}
-                            >
-                                <p>Prev</p>
-                            </Button>
+                            <ThemeProvider theme={theme}>
+                                <Button
+                                    variant="contained" 
+                                    startIcon={<ArrowBackIosIcon />}
+                                    onClick={goToPrevQuestion}
+                                >
+                                    <p>Prev</p>
+                                </Button>
+                            </ThemeProvider>
                         </div>
                     }
                     <div className="absolute right-4 bottom-4">
-                        <Button
-                            variant="outlined" 
-                            endIcon={<ArrowForwardIosIcon />}
-                            onClick={goToNextQuestion}
-                            style={{
-                                backgroundColor: "#21b6a818cf8",
-                                // padding: "18px 36px",
-                                // fontSize: "18px"
-                            }}
-                        >
-                            {props.questionNb === (questions.length - 1) ?
-                                <p>Get my Beer</p>
-                            :
-                                <p>Next</p>
-                            }
-                        </Button>
+                        <ThemeProvider theme={theme}>
+                            <Button
+                                variant="contained" 
+                                endIcon={<ArrowForwardIosIcon />}
+                                onClick={goToNextQuestion}
+                            >
+                                {props.questionNb === (questions.length - 1) ?
+                                    <p>Get my Beer</p>
+                                :
+                                    <p>Next</p>
+                                }
+                            </Button>
+                        </ThemeProvider>
                     </div>
                 </div>
                 <div className="z-0">

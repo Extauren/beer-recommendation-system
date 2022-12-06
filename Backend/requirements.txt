@@ -3,3 +3,5 @@ mysql-connector-python
 tqdm
 click
 openai
+Flask-Cors
+gunicorn

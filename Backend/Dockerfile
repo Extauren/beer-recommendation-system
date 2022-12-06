@@ -1,4 +1,4 @@
-FROM python:3.11.0
+FROM python:3.11.0-slim
 
 WORKDIR /tmp
 
@@ -10,6 +10,10 @@ RUN pip install -r requirements.txt
 
 WORKDIR /app
 
+COPY . .
+
 EXPOSE 3000
 
-CMD python3 -um src.app
+COPY src src
+
+CMD gunicorn -b 0.0.0.0:3001 --timeout 600 src.wsgi:app --access-logfile -
