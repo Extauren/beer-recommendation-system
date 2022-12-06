@@ -13,10 +13,24 @@ from src.Scripts.init_database import connect_to_database
 
 bp = Blueprint('recommendation', __name__, url_prefix='')
 
-def get_type(survey, connection):
+def getAbvMinAndMax(abv: str) -> str:
+    if abv == "Lite":
+        return "0", "4"
+    elif abv == "Normal":
+        return "5", "6"
+    elif abv == "Strong":
+        return "7", "14"
+
+def getIsOrganic(organic: str) -> str:
+    if organic == "Yes":
+        return "1"
+    elif organic == "No": 
+        return "0"
+
+def get_type(type, abvMin, abvMax, organic, connection):
     return read_query(connection,
-                      "SELECT * FROM Beer WHERE `type` LIKE '%{}%' AND `abv` >= '{}' AND `abv` <= '{}' AND `organic` = '{}'".format(
-                          survey["type"], survey["abvMin"], survey["abvMax"], survey["organic"]))
+        "SELECT * FROM Beer WHERE `type` LIKE '%{}%' AND `abv` >= '{}' AND `abv` <= '{}' AND `organic` = '{}'".format(
+            type, abvMin, abvMax, organic))
     # return read_query(connection, "SELECT * FROM Beer WHERE `type` = '{}'".format(survey["type"]))
 
 
@@ -38,7 +52,9 @@ def recommendation_post():
 
     # connection = create_db_connection("db", 3306, "user", "password", "beer_database")
     connection = connect_to_database()
-    beer_list = get_type(survey, connection)
+    abvMin, abvMax = getAbvMinAndMax(survey["abv"])
+    beer_list = get_type(survey["type"], abvMin, abvMax, getIsOrganic(survey["organic"]), connection)
+    print(len(beer_list))
     # for i in range(len(beer_list)):
     #     if (beer_list[i][3] >= float(survey["abvMin"]) and beer_list[i][3] <= float(survey["abvMax"])) \
     #     and beer_list[i][9] == int(survey["organic"]):

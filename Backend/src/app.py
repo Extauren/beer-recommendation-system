@@ -8,7 +8,7 @@ from src.Routes.recommendation.user_evaluation.POST.route import bp as evualuati
 def create_app() -> Flask:
     app = Flask(__name__)
     
-    socket.setdefaulttimeout(200)
+    #socket.setdefaulttimeout(200)
     app.register_blueprint(recommendation)
     app.register_blueprint(evualuation)
     CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}}, supports_credentials=True)

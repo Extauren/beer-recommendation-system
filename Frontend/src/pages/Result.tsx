@@ -65,12 +65,23 @@ export default function Result() {
             </div>
             <div className="flex justify-center xl:-mt-12">
                 <ThemeProvider theme={theme}>
-                    <Button
-                        variant="contained"
-                        onClick={getAnotherBeer}
-                    >
-                        Get another beer
-                    </Button>
+                    { index < 9 ?
+                    
+                        <Button
+                            variant="contained"
+                            onClick={getAnotherBeer}
+                        >
+                            Get another beer
+                        </Button>
+                    :
+                        <Button
+                            disabled
+                            variant="contained"
+                            onClick={getAnotherBeer}
+                        >
+                            Get another beer
+                        </Button>
+                    }
                 </ThemeProvider>
             </div>
             <div className="flex justify-center mt-32">

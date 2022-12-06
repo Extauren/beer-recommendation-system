@@ -58,7 +58,7 @@ export default function Questionnaire(props: any) {
 
     const getBeer = () => {
         axios.post("/recommendation", {
-            "type": beerType, "organic": "0", "abvMin": "3", "abvMax": "7"
+            "type": beerType, "organic": isOrganic, "abv": alcohol
         }).then((result: any) => {
             // console.log(result.data);
             navigate("/result", {replace: false, state: {'result': result.data}});
