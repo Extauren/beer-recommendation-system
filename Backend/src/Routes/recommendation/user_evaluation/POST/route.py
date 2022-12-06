@@ -1,13 +1,13 @@
-from __main__ import app
-
 import os
 import openai
 
-from flask import request
+from flask import request, Blueprint
+
+bp = Blueprint('user_evulation', __name__, url_prefix='/recommendation')
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
-@app.post("/recommendation/user_evaluation")
+@bp.route("/user_evaluation", methods=(['POST']))
 def recommendation_user_evaluation_post():
     user_eval = request.get_json(force=True)
 

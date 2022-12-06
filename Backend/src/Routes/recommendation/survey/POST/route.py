@@ -1,16 +1,17 @@
-from __main__ import app
+# from __main__ import app
 import json
 import random
 from typing import Any
 
 from src.RateBeer_API.BeerInfos import BeerReviewInfos
 
-from flask import request, jsonify
+from flask import request, jsonify, Blueprint
 
 from src.Database.query import read_query
 from src.Database.connection import create_db_connection
 from src.Scripts.init_database import connect_to_database
 
+bp = Blueprint('recommendation', __name__, url_prefix='')
 
 def get_type(survey, connection):
     return read_query(connection,
@@ -31,7 +32,7 @@ def get_organic(survey, connection):
     return read_query(connection, "SELECT * FROM Beer WHERE `organic` = '{}'".format(survey["organic"]))
 
 
-@app.post("/recommendation")
+@bp.route("/recommendation", methods=(['POST']))
 def recommendation_post():
     survey = request.get_json(force=True)
 
