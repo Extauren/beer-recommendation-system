@@ -43,7 +43,9 @@ def recommendation_post():
     #     if (beer_list[i][3] >= float(survey["abvMin"]) and beer_list[i][3] <= float(survey["abvMax"])) \
     #     and beer_list[i][9] == int(survey["organic"]):
     #         recommended_beer_list.append(beer_list[i])
-    random_recommended_beer: list = random.sample(beer_list, 10)
+    if not beer_list:
+        return [], 200
+    random_recommended_beer: list = random.sample(beer_list, 10 if len(beer_list) >= 10 else len(beer_list))
     beer_notes: dict[str, int] = {
         beer.name: n
         for n, beer in enumerate(sorted([BeerReviewInfos(connection, beer[1]) for beer in random_recommended_beer],

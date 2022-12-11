@@ -5,3 +5,4 @@ click
 openai
 Flask-Cors
 gunicorn
+requests
