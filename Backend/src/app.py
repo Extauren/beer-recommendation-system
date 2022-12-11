@@ -2,7 +2,7 @@ from flask import Flask
 from flask_cors import CORS
 import socket
 
-from src.Routes.recommendation.survey.POST.route import bp as recommendation
+from src.Routes.recommendation.POST.route import bp as recommendation
 from src.Routes.recommendation.user_evaluation.POST.route import bp as evualuation
 
 def create_app() -> Flask:
