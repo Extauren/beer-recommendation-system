@@ -13,35 +13,36 @@ from src.Scripts.init_database import connect_to_database
 
 bp = Blueprint('recommendation', __name__, url_prefix='')
 
-def get_abv_min_and_max(abv: str) -> str:
+def get_abv_min_and_max(abv: str) -> tuple:
     if abv == "Lite":
         return "0", "4"
     elif abv == "Normal":
         return "5", "6"
     elif abv == "Strong":
         return "7", "14"
+    else:
+        return "0", "14"
 
 def get_is_organic(organic: str) -> str:
     if organic == "Yes":
         return "1"
-    elif organic == "No": 
+    elif organic == "No":
+        return "0"
+    else:
         return "0"
 
 def tranform_type(type: str) -> str:
     if type == "IPA":
         return "India Pale Ale"
+    elif type == "Fruity":
+        return "Fruit"
     else:
         return type
 
 def get_type(type, abvMin, abvMax, organic, connection):
     return read_query(connection,
         "SELECT * FROM Beer WHERE `type` LIKE '%{}%' AND `abv` >= '{}' AND `abv` <= '{}' AND `organic` = '{}'".format(
-            type,
-            abvMin,
-            abvMax,
-            organic
-        ))
-
+            type, abvMin, abvMax, organic))
 
 def get_abv(survey, connection):
     return read_query(connection, "SELECT * FROM Beer WHERE `abv` = '{}'".format(survey["abv"]))
