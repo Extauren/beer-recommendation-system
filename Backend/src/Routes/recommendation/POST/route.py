@@ -41,7 +41,7 @@ def tranform_type(type: str) -> str:
 
 def get_type(type, abvMin, abvMax, organic, connection):
     return read_query(connection,
-        "SELECT * FROM Beer WHERE `type` LIKE '%{}%' AND `abv` >= '{}' AND `abv` <= '{}' AND `organic` = '{}'".format(
+        "SELECT * FROM Beer WHERE `style_name` LIKE '%{}%' AND `abv` >= '{}' AND `abv` <= '{}' AND `organic` = '{}'".format(
             type, abvMin, abvMax, organic))
 
 def get_abv(survey, connection):
