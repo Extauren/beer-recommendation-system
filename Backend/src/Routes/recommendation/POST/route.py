@@ -13,7 +13,7 @@ from src.Scripts.init_database import connect_to_database
 
 bp = Blueprint('recommendation', __name__, url_prefix='')
 
-def getAbvMinAndMax(abv: str) -> str:
+def get_abv_min_and_max(abv: str) -> str:
     if abv == "Lite":
         return "0", "4"
     elif abv == "Normal":
@@ -21,17 +21,26 @@ def getAbvMinAndMax(abv: str) -> str:
     elif abv == "Strong":
         return "7", "14"
 
-def getIsOrganic(organic: str) -> str:
+def get_is_organic(organic: str) -> str:
     if organic == "Yes":
         return "1"
     elif organic == "No": 
         return "0"
 
+def tranform_type(type: str) -> str:
+    if type == "IPA":
+        return "India Pale Ale"
+    else:
+        return type
+
 def get_type(type, abvMin, abvMax, organic, connection):
     return read_query(connection,
         "SELECT * FROM Beer WHERE `type` LIKE '%{}%' AND `abv` >= '{}' AND `abv` <= '{}' AND `organic` = '{}'".format(
-            type, abvMin, abvMax, organic))
-    # return read_query(connection, "SELECT * FROM Beer WHERE `type` = '{}'".format(survey["type"]))
+            type,
+            abvMin,
+            abvMax,
+            organic
+        ))
 
 
 def get_abv(survey, connection):
@@ -50,15 +59,9 @@ def get_organic(survey, connection):
 def recommendation_post():
     survey = request.get_json(force=True)
 
-    # connection = create_db_connection("db", 3306, "user", "password", "beer_database")
     connection = connect_to_database()
-    abvMin, abvMax = getAbvMinAndMax(survey["abv"])
-    beer_list = get_type(survey["type"], abvMin, abvMax, getIsOrganic(survey["organic"]), connection)
-    print(len(beer_list))
-    # for i in range(len(beer_list)):
-    #     if (beer_list[i][3] >= float(survey["abvMin"]) and beer_list[i][3] <= float(survey["abvMax"])) \
-    #     and beer_list[i][9] == int(survey["organic"]):
-    #         recommended_beer_list.append(beer_list[i])
+    abvMin, abvMax = get_abv_min_and_max(survey["abv"])
+    beer_list = get_type(tranform_type(survey["type"]), abvMin, abvMax, get_is_organic(survey["organic"]), connection)
     if not beer_list:
         return [], 200
     random_recommended_beer: list = random.sample(beer_list, 10 if len(beer_list) >= 10 else len(beer_list))
