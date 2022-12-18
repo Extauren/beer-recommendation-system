@@ -65,7 +65,7 @@ def recommendation_post():
     beer_list = get_type(tranform_type(survey["type"]), abvMin, abvMax, get_is_organic(survey["organic"]), connection)
     if not beer_list:
         return [], 200
-    random_recommended_beer: list = random.sample(beer_list, 10 if len(beer_list) >= 10 else len(beer_list))
+    random_recommended_beer: list = random.sample(beer_list, 5 if len(beer_list) >= 5 else len(beer_list))
     beer_notes: dict[str, int] = {
         beer.name: n
         for n, beer in enumerate(sorted([BeerReviewInfos(connection, beer[1]) for beer in random_recommended_beer],
