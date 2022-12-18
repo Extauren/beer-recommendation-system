@@ -1,4 +1,5 @@
 import os
+from Backend.src.Database.user_evaluation import decrease_beer_evaluation, increase_beer_evaluation
 import openai
 
 from flask import request, Blueprint
@@ -13,18 +14,14 @@ def add_evaluation_to_beer():
     user_eval = request.get_json(force=True)
 
     sentiment = recommendation_user_evaluation_post(user_eval["user_evaluation"]) # Maybe we'll change the request field, we should ask the frontend team
-    if sentiment == "positive":
-        sentiment_nbr = 1
-    elif sentiment == "neutral":
-        sentiment_nbr = 0
-    else: # negative
-        sentiment_nbr = -1
-    update_beer_sentiment(user_eval["beer_name"], sentiment_nbr)
-    return sentiment, 201
-
-def update_beer_sentiment(beer_name: str, sentiment: int):
     connection = connect_to_database()
-    pass
+    if sentiment == "positive":
+        increase_beer_evaluation(connection, user_eval["beer_id"])
+    elif sentiment == "negative":
+        decrease_beer_evaluation(connection, user_eval["beer_id"])
+    else: # neutral
+        pass
+    return sentiment, 201
 
 def recommendation_user_evaluation_post(user_eval: str):
     response = openai.Completion.create(
