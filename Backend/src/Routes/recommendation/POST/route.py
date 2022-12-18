@@ -15,6 +15,7 @@ import re
 
 bp = Blueprint('recommendation', __name__, url_prefix='')
 
+
 def get_abv_min_and_max(abv: str) -> tuple:
     if abv == "Lite":
         return "0", "4"
@@ -25,6 +26,7 @@ def get_abv_min_and_max(abv: str) -> tuple:
     else:
         return "0", "14"
 
+
 def get_is_organic(organic: str) -> str:
     if organic == "Yes":
         return "1"
@@ -32,6 +34,7 @@ def get_is_organic(organic: str) -> str:
         return "0"
     else:
         return "0"
+
 
 def tranform_type(type: str) -> str:
     if type == "IPA":
@@ -41,21 +44,40 @@ def tranform_type(type: str) -> str:
     else:
         return type
 
+
 def get_type(type, abvMin, abvMax, organic, connection):
     return read_query(connection,
-        "SELECT * FROM Beer WHERE `style_name` LIKE '%{}%' AND `abv` >= '{}' AND `abv` <= '{}' AND `organic` = '{}'".format(
-            type, abvMin, abvMax, organic))
+                      "SELECT * FROM Beer WHERE `style_name` LIKE '%{}%' AND `abv` >= '{}' AND `abv` <= '{}' AND `organic` = '{}'".format(
+                          type, abvMin, abvMax, organic))
+
 
 def get_abv(survey, connection):
-    return read_query(connection, "SELECT * FROM Beer WHERE `abv` = '{}'".format(survey["abv"]))
+    return read_query(connection,
+                      "SELECT * FROM Beer WHERE `abv` = '{}'".format(
+                          survey["abv"]))
 
 
 def get_ibu(survey, connection):
-    return read_query(connection, "SELECT * FROM Beer WHERE `ibu` = '{}'".format(survey["ibu"]))
+    return read_query(connection,
+                      "SELECT * FROM Beer WHERE `ibu` = '{}'".format(
+                          survey["ibu"]))
 
 
 def get_organic(survey, connection):
-    return read_query(connection, "SELECT * FROM Beer WHERE `organic` = '{}'".format(survey["organic"]))
+    return read_query(connection,
+                      "SELECT * FROM Beer WHERE `organic` = '{}'".format(
+                          survey["organic"]))
+
+
+def add_more_beer_if_not_enough(survey: dict, connection) -> list:
+    mpa_increase_abv = {
+        "Lite": "Normal",
+        "Normal": "Strong",
+        "Strong": "Normal"
+    }
+    abvMin, abvMax = get_abv_min_and_max(mpa_increase_abv[survey["abv"]])
+    return get_type(tranform_type(survey["type"]), abvMin, abvMax,
+                    get_is_organic(survey["organic"]), connection)
 
 
 @bp.route("/recommendation", methods=(['POST']))
@@ -64,22 +86,30 @@ def recommendation_post():
 
     connection = connect_to_database()
     abvMin, abvMax = get_abv_min_and_max(survey["abv"])
-    beer_list = get_type(tranform_type(survey["type"]), abvMin, abvMax, get_is_organic(survey["organic"]), connection)
+    beer_list = get_type(tranform_type(survey["type"]), abvMin, abvMax,
+                         get_is_organic(survey["organic"]), connection)
     if not beer_list:
         return [], 200
-    random_recommended_beer: list = random.sample(beer_list, 5 if len(beer_list) >= 5 else len(beer_list))
+    random_recommended_beer: list = random.sample(beer_list, 5 if len(
+        beer_list) >= 5 else len(beer_list))
+
+    if len(random_recommended_beer) < 5:
+        beer_list = add_more_beer_if_not_enough(survey, connection)
+        random_recommended_beer += random.sample(beer_list, 5 - len(random_recommended_beer) if len(beer_list) >= 5 - len(random_recommended_beer) else len(beer_list))
+
     beer_notes: dict[str, int] = {
         beer.name: n
-        for n, beer in enumerate(sorted([BeerReviewInfos(connection, beer[1]) for beer in random_recommended_beer],
-                                        key=lambda beer: beer.average_overall, reverse=True))}
+        for n, beer in enumerate(sorted(
+            [BeerReviewInfos(connection, beer[1]) for beer in
+             random_recommended_beer],
+            key=lambda beer: beer.average_overall, reverse=True))}
     recommended_beer_list: list[tuple] = random_recommended_beer.copy()
     for beer in random_recommended_beer:
         recommended_beer_list[beer_notes[beer[1]]] = beer
+    new_recommended_beer_list: list[tuple] = []
     for beer in recommended_beer_list:
-        if re.search(tranform_type(survey["type"]), beer[8], re.IGNORECASE):
-            beer.append("75")
-        else:
-            beer.append("100")
+        new_recommended_beer_list.append((*beer, "100" if re.search(
+            tranform_type(survey["type"]), beer[8], re.IGNORECASE) else "75"))
     connection.close()
     return jsonify([{
         "id": beer[0],
@@ -93,4 +123,4 @@ def recommendation_post():
         "type": beer[8],
         "organic": beer[9],
         "percentage": beer[10]
-    } for beer in recommended_beer_list]), 200
+    } for beer in new_recommended_beer_list]), 200
