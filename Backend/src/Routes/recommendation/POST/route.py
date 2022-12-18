@@ -36,6 +36,17 @@ def get_is_organic(organic: str) -> str:
         return "0"
 
 
+def get_ibu_min_and_max(ibu: str) -> tuple:
+    if ibu == "Low":
+        return "5", "30"
+    elif ibu == "Medium":
+        return "30", "50"
+    elif ibu == "High":
+        return "50", "100"
+    else:
+        return "0", "100"
+
+
 def tranform_type(type: str) -> str:
     if type == "IPA":
         return "India Pale Ale"
@@ -45,10 +56,10 @@ def tranform_type(type: str) -> str:
         return type
 
 
-def get_type(type, abvMin, abvMax, organic, connection):
+def get_type(type, abvMin, abvMax, ibuMin, ibuMax, organic, connection):
     return [(*beer, 100) for beer in read_query(connection,
-                      "SELECT * FROM Beer WHERE `style_name` LIKE '%{}%' AND `abv` >= '{}' AND `abv` <= '{}' AND `organic` = '{}'".format(
-                          type, abvMin, abvMax, organic))]
+                      "SELECT * FROM Beer WHERE `style_name` LIKE '%{}%' AND `abv` >= '{}' AND `abv` <= '{}' AND `ibu` >= '{}' AND `ibu` <= '{}' AND `organic` = '{}'".format(
+                          type, abvMin, abvMax, ibuMin, ibuMax, organic))]
 
 
 def get_abv(survey, connection):
@@ -86,8 +97,10 @@ def recommendation_post():
 
     connection = connect_to_database()
     abvMin, abvMax = get_abv_min_and_max(survey["abv"])
+    ibuMin, ibuMax = get_ibu_min_and_max(survey["ibu"])
     beer_list = get_type(tranform_type(survey["type"]), abvMin, abvMax,
-                         get_is_organic(survey["organic"]), connection)
+                        ibuMin, ibuMax, get_is_organic(survey["organic"]),
+                        connection)
     if not beer_list:
         return [], 200
     random_recommended_beer: list = random.sample(beer_list, 5 if len(
