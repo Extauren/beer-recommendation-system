@@ -37,6 +37,23 @@ export default function Help(props: any) {
                 "title": "What is an organic beer ?",
                 "message": "In its simplest form, organic beer is any beer brewed using organic ingredients. The malt, hops, yeast, flavorings, and adjuncts must have an organic label."
             }
+        ],[
+            {   "title": "What is ibu ?",
+                "message": "IBU, or International Bitterness Unit, is the index used to measure and understand how bitter your beer will turn out to be. Even though IBUs determine the bitterness of a beer, they are not a total indication of the beer’s quality. It is all a game of matching your personal preferences and understanding the math behind the system."
+            },
+            {
+                "title": "Low",
+                "message": "between 5 and 30"
+            },
+            {
+                "title": "Medium",
+                "message": "between 30 and 50"
+            },
+            {
+                "title": "Hight",
+                "message": "Highter than 50"
+            }
+
         ],[]]);
 
     return (
@@ -45,6 +62,7 @@ export default function Help(props: any) {
                 container 
                 spacing={{xs: 3, md: 3, xl: 3}}
                 columns={{xs: 2, md: 2, xl: 2}}
+                className="flex justify-center"
             >
                 {help[props.questionNb].map((info: any, index: number) => (
                     <Grid item key={index} className="">
@@ -54,20 +72,5 @@ export default function Help(props: any) {
                 ))}
             </Grid>
         </div>
-        // <div className="mt-96">
-        //     <h1 className="ml-72 mb-12 font-bold text-2xl">Help</h1>
-        //     <Grid
-        //         container 
-        //         spacing={{xs: 3, md: 3, xl: 3}}
-        //         columns={{xs: 2, md: 2, xl: 2}}
-        //     >
-        //         {help[props.questionNb].map((info: any, index: number) => (
-        //             <Grid item key={index} className="w-2/5 xl:w-2/5">
-        //                 <h2 className="font-bold">{info.title}</h2>
-        //                 <p className="mt-2 mb-4">{info.message}</p>
-        //             </Grid>
-        //         ))}
-        //     </Grid>
-        // </div>
     )
 }

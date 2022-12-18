@@ -4,11 +4,14 @@ import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
+import axios from 'axios';
 
 export default function Result() {
-    const [index, setIndex] = React.useState(0);
+    const [index, setIndex] = React.useState<number>(0);
     const {state} = useLocation();
     const [result, setResult] = React.useState<any>(state.result[index]);
+    const [length, setLength] = React.useState<number>(state.result.length);
+    const [userEval, setUserEval] = React.useState<string>("");
     const theme = createTheme({
         palette: {
           primary: {
@@ -17,6 +20,22 @@ export default function Result() {
         },
       });
 
+    React.useEffect(() => {
+        console.log(state.result);
+        console.log(result.ibu)
+    }, [])
+
+    const sendReview = async () => {
+        await axios.post("/recommendation/user_evaluation", {
+            "beer_id": result.id, "user_evaluation": userEval
+        }).then((response: any) => {
+            console.log(response);
+            setUserEval("");
+        }).catch((error: any) => {
+            console.log(error);
+        });
+    }
+
     const getAnotherBeer = () => {
         setResult(state.result[index + 1]);
         setIndex(index + 1);
@@ -24,6 +43,12 @@ export default function Result() {
 
     return (
         <div>
+            {result.name === "" ?
+                <div>
+                    no beer found
+                </div>
+            :
+            <div>
             <div className="mt-20 mb-6">
                 <Grid container spacing={4}>
                     <Grid item className="w-1/2">
@@ -48,23 +73,31 @@ export default function Result() {
                             </div>
                         </div>
                         <div className="">
-                            <div className="font-bold mt-4">Pourcentage of alcohol :</div>
+                            <div className="font-bold mt-4">Percentage of alcohol :</div>
                             <div>{result.abv} %</div>
                         </div>
                         <div>
                             <p className="font-bold mt-4">Is organic :</p>
-                            { result.isOrganic === 0 ?
-                                <p>No</p>
+                            { result.organic === 0 ?
+                                <div>No</div>
                             :
-                                <p>Yes</p>
+                                <div>Yes</div>
                             }
+                        </div>
+                        <div>
+                            <div className="font-bold mt-4">IBU :</div>
+                            <div>{result.ibu}</div>
+                        </div>
+                        <div>
+                            <div className="font-bold mt-4">Percentage :</div>
+                            <p>{result.percentage} %</p>
                         </div>
                     </Grid>
                 </Grid>
             </div>
-            <div className="flex justify-center xl:-mt-12">
+            <div className="flex justify-center">
                 <ThemeProvider theme={theme}>
-                    { index < 9 ?
+                    { index < length - 1 ?
                     
                         <Button
                             variant="contained"
@@ -83,14 +116,26 @@ export default function Result() {
                     }
                 </ThemeProvider>
             </div>
-            <div className="flex justify-center mt-32">
+            <div className="flex justify-center mt-20 mb-12">
                 <div className="">
                     <p className="text-xl font-bold mt-4 mr-12">Please review this recommendation</p>
                 </div>
-                <div className="">
-                    <TextField />
+                <div className="flex justify-center">
+                    <ThemeProvider theme={theme}>
+                        <TextField value={userEval} onChange={e => {setUserEval(e.target.value)}}/>
+                        <div className="ml-4 mt-2">
+                            <Button 
+                                onClick={sendReview}
+                                variant="contained"
+                            >
+                                Send Review
+                            </Button>
+                        </div>
+                    </ThemeProvider>
                 </div>
             </div>
-        </div>    
+            </div>
+            }
+        </div>   
     )
 }

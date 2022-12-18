@@ -62,12 +62,36 @@ def get_type(type, abvMin, abvMax, ibuMin, ibuMax, organic, connection):
                           type, abvMin, abvMax, ibuMin, ibuMax, organic))]
 
 
+<<<<<<< Updated upstream
 def change_abv_value(survey: dict, connection) -> list:
     map_increase_abv = {
+=======
+def get_abv(survey, connection):
+    return read_query(connection,
+                      "SELECT * FROM Beer WHERE `abv` = '{}'".format(
+                          survey["abv"]))
+
+
+def get_ibu(survey, connection):
+    return read_query(connection,
+                      "SELECT * FROM Beer WHERE `ibu` = '{}'".format(
+                          survey["ibu"]))
+
+
+def get_organic(survey, connection):
+    return read_query(connection,
+                      "SELECT * FROM Beer WHERE `organic` = '{}'".format(
+                          survey["organic"]))
+
+
+def add_more_beer_if_not_enough(survey: dict, connection, abvMin, abvMax, ibuMin, ibuMax) -> list:
+    mpa_increase_abv = {
+>>>>>>> Stashed changes
         "Lite": "Normal",
         "Normal": "Strong",
         "Strong": "Normal"
     }
+<<<<<<< Updated upstream
     abvMin, abvMax = get_abv_min_and_max(map_increase_abv(survey["abv"]))
     return get_type(tranform_type(survey["type"]), abvMin, abvMax, ibuMin, ibuMax,
                     get_is_organic(survey["organic"]), connection)
@@ -82,6 +106,9 @@ def change_ibu_value(survey: dict, connection) -> list:
     ibuMin, ibuMax = get_abv_min_and_max(map_increase_ibu(survey["ibu"]))
     return get_type(tranform_type(survey["type"]), abvibu, abvMax, ibuMin, ibuMax,
                     get_is_organic(survey["organic"]), connection)
+=======
+    return get_type(tranform_type(survey["type"]), abvMin, abvMax, ibuMin, ibuMax, get_is_organic(survey["organic"]), connection)
+>>>>>>> Stashed changes
 
 
 @bp.route("/recommendation", methods=(['POST']))
@@ -91,21 +118,23 @@ def recommendation_post():
     connection = connect_to_database()
     abvMin, abvMax = get_abv_min_and_max(survey["abv"])
     ibuMin, ibuMax = get_ibu_min_and_max(survey["ibu"])
-    beer_list = get_type(tranform_type(survey["type"]), abvMin, abvMax,
-                        ibuMin, ibuMax, get_is_organic(survey["organic"]),
-                        connection)
+    beer_list = get_type(tranform_type(survey["type"]), abvMin, abvMax, ibuMin, ibuMax, get_is_organic(survey["organic"]), connection)
     if not beer_list:
         return [], 200
     random_recommended_beer: list = random.sample(beer_list, 5 if len(
         beer_list) >= 5 else len(beer_list))
 
     if len(random_recommended_beer) < 5:
+<<<<<<< Updated upstream
         beer_list = change_abv_value(survey, connection)
         beer_list = [(*elem[0:10], elem[10] - 25) for elem in random.sample(beer_list, 5 - len(random_recommended_beer) if len(beer_list) >= 5 - len(random_recommended_beer) else len(beer_list))]
         random_recommended_beer += beer_list
 
     if len(random_recommended_beer) < 5:
         beer_list = change_ibu_value(survey, connection)
+=======
+        beer_list = add_more_beer_if_not_enough(survey, connection, ibuMin, ibuMax, abvMin, abvMax)
+>>>>>>> Stashed changes
         beer_list = [(*elem[0:10], elem[10] - 25) for elem in random.sample(beer_list, 5 - len(random_recommended_beer) if len(beer_list) >= 5 - len(random_recommended_beer) else len(beer_list))]
         random_recommended_beer += beer_list
 
@@ -134,5 +163,5 @@ def recommendation_post():
         "style": beer[7],
         "type": beer[8],
         "organic": beer[9],
-        "percentage": str(beer[10])
+        "percentage": beer[10]
     } for beer in new_recommended_beer_list]), 200

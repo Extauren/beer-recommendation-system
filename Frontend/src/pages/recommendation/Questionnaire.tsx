@@ -17,15 +17,16 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 export default function Questionnaire(props: any) {
     const navigate = useNavigate();
-    const [questions, setQuestion] = React.useState<any>(["What type of beer do you want ?", "How much alcohol do you want ?", "Do you want organic beer ?"]);
-    const [options, setOptions] = React.useState<any>([["Lager", "Stout", "White", "Amber", "IPA", "Fruity"], ["Lite", "Normal", "Strong"], ["Yes", "No"]]);
+    const [questions, setQuestion] = React.useState<any>(["What type of beer do you want ?", "How much alcohol do you want ?", "Do you want organic beer ?", "How much ibu do you want ?"]);
+    const [options, setOptions] = React.useState<any>([["Lager", "Stout", "White", "Amber", "IPA", "Fruity"], ["Lite", "Normal", "Strong"], ["Yes", "No"], ["Low", "Medium", "Hight"]]);
     const [beerType, setBeerType] = React.useState<string>("");
     const [alcohol, setAlcohol] = React.useState<string>("");
-    const [isOrganic, setIsOrganinc] = React.useState<string>("")
-    const formFunctions = React.useState<Array<React.Dispatch<React.SetStateAction<string>>>>([setBeerType, setAlcohol, setIsOrganinc]);
+    const [isOrganic, setIsOrganinc] = React.useState<string>("");
+    const [ibu, setIbu] = React.useState<string>("");
+    const formFunctions = React.useState<Array<React.Dispatch<React.SetStateAction<string>>>>([setBeerType, setAlcohol, setIsOrganinc, setIbu]);
     const [radius, setRadius] = React.useState<number>(550);
-    const [value, setValue] = React.useState<number>(100 / questions.length + 1);
-    const [test, setTest] = React.useState<number>(100 / questions.length + 1);
+    const [value, setValue] = React.useState<number>(100 / (questions.length + 2));
+    const [test, setTest] = React.useState<number>(100 / (questions.length + 2));
     const [isSearching, setIsSearching] = React.useState<boolean>(false);
     const interpolate = interpolateRgb('#FB923C', '#FB923C');
     const fillColor = interpolate(value / 100);
@@ -60,8 +61,7 @@ export default function Questionnaire(props: any) {
     });
 
     React.useEffect(() => {
-        console.log(props.isMobile);
-        if (props.isMobile == true)
+        if (props.isMobile === true)
             setRadius(300);
     }, [radius, props.isMobile]);
 
@@ -69,10 +69,9 @@ export default function Questionnaire(props: any) {
         setValue(value + test);
         setIsSearching(true);
         axios.post("/recommendation", {
-            "type": beerType, "organic": isOrganic, "abv": alcohol
+            "type": beerType, "organic": isOrganic, "abv": alcohol, "ibu": ibu
         }).then((result: any) => {
-            // console.log(result.data);
-            //setIsSearching(false);
+            console.log(result.data)
             navigate("/result", {replace: false, state: {'result': result.data}});
         }).catch((error: any) => {
             console.log(error)
@@ -148,7 +147,7 @@ export default function Questionnaire(props: any) {
                     />
             </div>
             { isSearching === false ?
-            <div className="z-10 absolute xl:w-1/4 xs:w-3/4 md:w-2/4 h-80 xl:mt-36 -mt-12">
+            <div className="z-10 absolute xl:w-1/4 xs:w-3/4 md:w-2/4 h-80 md:mt-36 -mt-12">
                 <div className="flex justify-center xl:mb-8 mb-12 text-xl font-bold">
                     {questions[props.questionNb]}
                 </div>
@@ -181,7 +180,7 @@ export default function Questionnaire(props: any) {
                     </FormGroup>
                 </div>
                 { props.questionNb > 0 &&
-                    <div className="absolute left-16 bottom-14">
+                    <div className="absolute left-12 bottom-14">
                         <ThemeProvider theme={theme}>
                             <Button
                                 variant="contained" 
@@ -193,7 +192,7 @@ export default function Questionnaire(props: any) {
                         </ThemeProvider>
                     </div>
                 }
-                <div className="absolute right-16 bottom-14">
+                <div className="absolute right-12 bottom-14">
                     <ThemeProvider theme={theme}>
                         <Button
                             variant="contained" 
@@ -213,7 +212,7 @@ export default function Questionnaire(props: any) {
             <div className="z-10 absolute mt-56">
                 <div className="flex justify-center">
                     <div className="flex text-center mb-8 text-2xl font-bold w-3/4">
-                        <p>We are trying to find the best beer for you</p>
+                        <p>We are trying to find the best beer for you !</p>
                     </div>
                 </div>
                 <div className="flex justify-center">
