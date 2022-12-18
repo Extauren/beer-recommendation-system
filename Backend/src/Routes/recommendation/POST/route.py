@@ -62,7 +62,7 @@ def get_type(type, abvMin, abvMax, ibuMin, ibuMax, organic, connection):
                           type, abvMin, abvMax, ibuMin, ibuMax, organic))]
 
 
-def change_abv_value(survey: dict, connection) -> list:
+def change_abv_value(survey: dict, connection, ibuMin, ibuMax) -> list:
     map_increase_abv = {
         "Lite": "Normal",
         "Normal": "Strong",
@@ -72,7 +72,7 @@ def change_abv_value(survey: dict, connection) -> list:
     return get_type(tranform_type(survey["type"]), abvMin, abvMax, ibuMin, ibuMax, get_is_organic(survey["organic"]), connection)
 
 
-def change_ibu_value(survey: dict, connection) -> list:
+def change_ibu_value(survey: dict, connection, abvMin, abvMax) -> list:
     map_increase_ibu = {
         "Low": "Medium",
         "Medium": "High",
