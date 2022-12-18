@@ -75,10 +75,11 @@ def recommendation_post():
     recommended_beer_list: list[tuple] = random_recommended_beer.copy()
     for beer in random_recommended_beer:
         recommended_beer_list[beer_notes[beer[1]]] = beer
-    percentage = "100"
     for beer in recommended_beer_list:
         if re.search(tranform_type(survey["type"]), beer[8], re.IGNORECASE):
-            percentage = "75"
+            beer.append("75")
+        else:
+            beer.append("100")
     connection.close()
     return jsonify([{
         "id": beer[0],
@@ -91,5 +92,5 @@ def recommendation_post():
         "style": beer[7],
         "type": beer[8],
         "organic": beer[9],
-        "percentage": percentage
+        "percentage": beer[10]
     } for beer in recommended_beer_list]), 200
