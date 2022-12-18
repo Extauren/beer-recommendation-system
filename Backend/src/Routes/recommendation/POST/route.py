@@ -46,9 +46,9 @@ def tranform_type(type: str) -> str:
 
 
 def get_type(type, abvMin, abvMax, organic, connection):
-    return read_query(connection,
+    return [(*beer, 100) for beer in read_query(connection,
                       "SELECT * FROM Beer WHERE `style_name` LIKE '%{}%' AND `abv` >= '{}' AND `abv` <= '{}' AND `organic` = '{}'".format(
-                          type, abvMin, abvMax, organic))
+                          type, abvMin, abvMax, organic))]
 
 
 def get_abv(survey, connection):
@@ -95,7 +95,8 @@ def recommendation_post():
 
     if len(random_recommended_beer) < 5:
         beer_list = add_more_beer_if_not_enough(survey, connection)
-        random_recommended_beer += random.sample(beer_list, 5 - len(random_recommended_beer) if len(beer_list) >= 5 - len(random_recommended_beer) else len(beer_list))
+        beer_list = [(*elem[0:10], elem[10] - 25) for elem in random.sample(beer_list, 5 - len(random_recommended_beer) if len(beer_list) >= 5 - len(random_recommended_beer) else len(beer_list))]
+        random_recommended_beer += beer_list
 
     beer_notes: dict[str, int] = {
         beer.name: n
@@ -108,8 +109,8 @@ def recommendation_post():
         recommended_beer_list[beer_notes[beer[1]]] = beer
     new_recommended_beer_list: list[tuple] = []
     for beer in recommended_beer_list:
-        new_recommended_beer_list.append((*beer, "100" if re.search(
-            tranform_type(survey["type"]), beer[8], re.IGNORECASE) else "75"))
+        new_recommended_beer_list.append((*beer[0:10], beer[10] - (0 if re.search(
+            tranform_type(survey["type"]), beer[7], re.IGNORECASE) else 25)))
     connection.close()
     return jsonify([{
         "id": beer[0],
@@ -122,5 +123,5 @@ def recommendation_post():
         "style": beer[7],
         "type": beer[8],
         "organic": beer[9],
-        "percentage": beer[10]
+        "percentage": str(beer[10])
     } for beer in new_recommended_beer_list]), 200
