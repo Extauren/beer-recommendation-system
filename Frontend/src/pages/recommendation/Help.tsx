@@ -37,23 +37,37 @@ export default function Help(props: any) {
                 "title": "What is an organic beer ?",
                 "message": "In its simplest form, organic beer is any beer brewed using organic ingredients. The malt, hops, yeast, flavorings, and adjuncts must have an organic label."
             }
-        ]]);
+        ],[]]);
 
     return (
-        <div className="mt-32 absolute 2xl:ml-32">
-            {/* <h1 className="ml-72 mb-12 font-bold text-2xl">Help</h1> */}
+        <div className="w-3/4">
             <Grid
                 container 
                 spacing={{xs: 3, md: 3, xl: 3}}
                 columns={{xs: 2, md: 2, xl: 2}}
             >
                 {help[props.questionNb].map((info: any, index: number) => (
-                    <Grid item key={index} className="w-2/5 xl:w-2/5">
+                    <Grid item key={index} className="">
                         <h2 className="font-bold">{info.title}</h2>
                         <p className="mt-2 mb-4">{info.message}</p>
                     </Grid>
                 ))}
             </Grid>
         </div>
+        // <div className="mt-96">
+        //     <h1 className="ml-72 mb-12 font-bold text-2xl">Help</h1>
+        //     <Grid
+        //         container 
+        //         spacing={{xs: 3, md: 3, xl: 3}}
+        //         columns={{xs: 2, md: 2, xl: 2}}
+        //     >
+        //         {help[props.questionNb].map((info: any, index: number) => (
+        //             <Grid item key={index} className="w-2/5 xl:w-2/5">
+        //                 <h2 className="font-bold">{info.title}</h2>
+        //                 <p className="mt-2 mb-4">{info.message}</p>
+        //             </Grid>
+        //         ))}
+        //     </Grid>
+        // </div>
     )
 }

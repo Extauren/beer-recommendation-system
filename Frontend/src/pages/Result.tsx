@@ -4,7 +4,6 @@ import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import { isConstructorDeclaration } from 'typescript';
 
 export default function Result() {
     const [index, setIndex] = React.useState(0);

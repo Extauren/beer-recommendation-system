@@ -8,7 +8,7 @@ export default function Header() {
                 <Link to="/">
                     <img src={BeerLogo} className="h-16"/>
                 </Link>
-                <h1 className="font-bold mt-4 ml-2 text-xl">Beer Recommendation System</h1>
+                <h1 className="font-bold mt-4 ml-2 text-xl">GlouGlou Intelligence</h1>
             </div>
         </div>
     )
