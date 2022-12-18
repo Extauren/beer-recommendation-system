@@ -78,7 +78,7 @@ def change_ibu_value(survey: dict, connection) -> list:
         "Medium": "High",
         "High": "Medium"
     }
-    ibuMin, ibuMax = get_abv_min_and_max(map_increase_ibu(survey["ibu"]))
+    ibuMin, ibuMax = get_ibu_min_and_max(map_increase_ibu(survey["ibu"]))
     return get_type(tranform_type(survey["type"]), abvMin, abvMax, ibuMin, ibuMax, get_is_organic(survey["organic"]), connection)
 
 
