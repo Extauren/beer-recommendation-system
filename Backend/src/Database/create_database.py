@@ -1,10 +1,9 @@
 from mysql.connector import Error, MySQLConnection
-from mysql.connector.cursor_cext import CMySQLCursor
+from mysql.connector.cursor import MySQLCursor
 
 
 def create_database(connection: MySQLConnection, query: str) -> None:
-    cursor: CMySQLCursor = connection.cursor()
-    # cursor = connection.cursor()
+    cursor:  MySQLCursor = connection.cursor()
     try:
         cursor.execute(query)
         print("Database created successfully")
