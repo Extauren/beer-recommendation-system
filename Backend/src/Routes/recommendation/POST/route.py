@@ -11,6 +11,8 @@ from src.Database.query import read_query
 from src.Database.connection import create_db_connection
 from src.Scripts.init_database import connect_to_database
 
+import re
+
 bp = Blueprint('recommendation', __name__, url_prefix='')
 
 def get_abv_min_and_max(abv: str) -> tuple:
@@ -73,6 +75,10 @@ def recommendation_post():
     recommended_beer_list: list[tuple] = random_recommended_beer.copy()
     for beer in random_recommended_beer:
         recommended_beer_list[beer_notes[beer[1]]] = beer
+    percentage = "100"
+    for beer in recommended_beer_list:
+        if re.search(tranform_type(survey["type"]), beer[8], re.IGNORECASE):
+            percentage = "75"
     connection.close()
     return jsonify([{
         "id": beer[0],
@@ -84,5 +90,6 @@ def recommendation_post():
         "style_description": beer[6],
         "style": beer[7],
         "type": beer[8],
-        "organic": beer[9]
+        "organic": beer[9],
+        "percentage": percentage
     } for beer in recommended_beer_list]), 200
