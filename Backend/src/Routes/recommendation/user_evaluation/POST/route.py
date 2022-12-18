@@ -1,5 +1,5 @@
 import os
-from Backend.src.Database.user_evaluation import decrease_beer_evaluation, increase_beer_evaluation
+from src.Database.user_evaluation import decrease_beer_evaluation, increase_beer_evaluation
 import openai
 
 from flask import request, Blueprint
@@ -21,7 +21,7 @@ def add_evaluation_to_beer():
         decrease_beer_evaluation(connection, user_eval["beer_id"])
     else: # neutral
         pass
-    return sentiment, 201
+    return "OK", 201
 
 def recommendation_user_evaluation_post(user_eval: str):
     response = openai.Completion.create(
