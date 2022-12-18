@@ -62,32 +62,25 @@ def get_type(type, abvMin, abvMax, ibuMin, ibuMax, organic, connection):
                           type, abvMin, abvMax, ibuMin, ibuMax, organic))]
 
 
-def get_abv(survey, connection):
-    return read_query(connection,
-                      "SELECT * FROM Beer WHERE `abv` = '{}'".format(
-                          survey["abv"]))
-
-
-def get_ibu(survey, connection):
-    return read_query(connection,
-                      "SELECT * FROM Beer WHERE `ibu` = '{}'".format(
-                          survey["ibu"]))
-
-
-def get_organic(survey, connection):
-    return read_query(connection,
-                      "SELECT * FROM Beer WHERE `organic` = '{}'".format(
-                          survey["organic"]))
-
-
-def add_more_beer_if_not_enough(survey: dict, connection) -> list:
-    mpa_increase_abv = {
+def change_abv_value(survey: dict, connection) -> list:
+    map_increase_abv = {
         "Lite": "Normal",
         "Normal": "Strong",
         "Strong": "Normal"
     }
-    abvMin, abvMax = get_abv_min_and_max(mpa_increase_abv[survey["abv"]])
-    return get_type(tranform_type(survey["type"]), abvMin, abvMax,
+    abvMin, abvMax = get_abv_min_and_max(map_increase_abv(survey["abv"]))
+    return get_type(tranform_type(survey["type"]), abvMin, abvMax, ibuMin, ibuMax,
+                    get_is_organic(survey["organic"]), connection)
+
+
+def change_ibu_value(survey: dict, connection) -> list:
+    map_increase_ibu = {
+        "Low": "Medium",
+        "Medium": "High",
+        "High": "Medium"
+    }
+    ibuMin, ibuMax = get_abv_min_and_max(map_increase_ibu(survey["ibu"]))
+    return get_type(tranform_type(survey["type"]), abvibu, abvMax, ibuMin, ibuMax,
                     get_is_organic(survey["organic"]), connection)
 
 
@@ -107,7 +100,12 @@ def recommendation_post():
         beer_list) >= 5 else len(beer_list))
 
     if len(random_recommended_beer) < 5:
-        beer_list = add_more_beer_if_not_enough(survey, connection)
+        beer_list = change_abv_value(survey, connection)
+        beer_list = [(*elem[0:10], elem[10] - 25) for elem in random.sample(beer_list, 5 - len(random_recommended_beer) if len(beer_list) >= 5 - len(random_recommended_beer) else len(beer_list))]
+        random_recommended_beer += beer_list
+
+    if len(random_recommended_beer) < 5:
+        beer_list = change_ibu_value(survey, connection)
         beer_list = [(*elem[0:10], elem[10] - 25) for elem in random.sample(beer_list, 5 - len(random_recommended_beer) if len(beer_list) >= 5 - len(random_recommended_beer) else len(beer_list))]
         random_recommended_beer += beer_list
 
