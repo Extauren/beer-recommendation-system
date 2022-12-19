@@ -62,22 +62,35 @@ export default function Questionnaire(props: any) {
     });
 
     React.useEffect(() => {
-        console.log(formValues);
         if (props.isMobile === true)
             setRadius(300);
     }, [radius, props.isMobile]);
 
     const getBeer = () => {
-        setValue(value + test);
-        setIsSearching(true);
-        axios.post("/recommendation", {
-            "type": beerType, "organic": isOrganic, "abv": alcohol, "ibu": ibu
-        }).then((result: any) => {
-            console.log(result.data)
-            navigate("/result", {replace: false, state: {'result': result.data}});
-        }).catch((error: any) => {
-            console.log(error)
-        });
+        if (checkIfValuesAreEmpty() === true) {
+            props.setErrorMessage("Please fill the form entirely");
+            props.setQuestionNb(0);
+            setValue(100 / (questions.length + 2));
+        }
+        else {
+            props.setErrorMessage("");
+            setValue(value + test);
+            setIsSearching(true);
+            axios.post("/recommendation", {
+                "type": beerType, "organic": isOrganic, "abv": alcohol, "ibu": ibu
+            }).then((result: any) => {
+                console.log(result.data)
+                navigate("/result", {replace: false, state: {'result': result.data, 'setSendReview': props.setSendReview}});
+            }).catch((error: any) => {
+                console.log(error)
+            });
+        }
+    }
+
+    const checkIfValuesAreEmpty = () => {
+        if (beerType === "" || alcohol === "" || isOrganic === "" || ibu === "")
+            return true;
+        return false;
     }
 
     const goToPrevQuestion = () => {
