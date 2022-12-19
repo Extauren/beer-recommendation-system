@@ -18,11 +18,12 @@ import CircularProgress from '@mui/material/CircularProgress';
 export default function Questionnaire(props: any) {
     const navigate = useNavigate();
     const [questions, setQuestion] = React.useState<any>(["What type of beer do you want ?", "How much alcohol do you want ?", "Do you want organic beer ?", "How much ibu do you want ?"]);
-    const [options, setOptions] = React.useState<any>([["Lager", "Stout", "White", "Amber", "IPA", "Fruity"], ["Lite", "Normal", "Strong"], ["Yes", "No"], ["Low", "Medium", "Hight"]]);
+    const [options, setOptions] = React.useState<any>([["Lager", "Stout", "White", "Amber", "IPA", "Fruity", "Hybrid"], ["Lite", "Normal", "Strong"], ["Yes", "No"], ["Low", "Medium", "Hight"]]);
     const [beerType, setBeerType] = React.useState<string>("");
     const [alcohol, setAlcohol] = React.useState<string>("");
     const [isOrganic, setIsOrganinc] = React.useState<string>("");
     const [ibu, setIbu] = React.useState<string>("");
+    const formValues = React.useState<Array<any>>([beerType, alcohol, isOrganic, ibu]);
     const formFunctions = React.useState<Array<React.Dispatch<React.SetStateAction<string>>>>([setBeerType, setAlcohol, setIsOrganinc, setIbu]);
     const [radius, setRadius] = React.useState<number>(550);
     const [value, setValue] = React.useState<number>(100 / (questions.length + 2));
@@ -61,6 +62,7 @@ export default function Questionnaire(props: any) {
     });
 
     React.useEffect(() => {
+        console.log(formValues);
         if (props.isMobile === true)
             setRadius(300);
     }, [radius, props.isMobile]);
@@ -225,116 +227,3 @@ export default function Questionnaire(props: any) {
         </div>
     )
 }
-
-{/* <div className="">
-                <div className="w-4/5"> 
-                className="bottom-28 left-12 w-3/12 h-80 absolute z-10 ml-6"
-                    <div className="flex justify-center mt-4 text-xl font-bold">
-                        {questions[props.questionNb]}
-                    </div>
-                    <div className="flex justify-center mt-12">
-                        <FormGroup>
-                            <ThemeProvider theme={theme}>
-                                <RadioGroup
-                                   aria-labelledby="demo-radio-buttons-group-label"
-                                   name="radio-buttons-group"
-                                >
-                                    <Grid
-                                       container 
-                                       spacing={{xs: 3, md: 3, xl: 3}}
-                                       columns={{xs: 2, md: 2, xl: 2}}
-                                       className="flex justify-center"
-                                    >
-                                        {options[props.questionNb].map((option: string, index: number) => (
-                                            <Grid item key={index}>
-                                                <FormControlLabel
-                                                    value={option}
-                                                    control={<Radio/>}
-                                                    label={option}
-                                                    onChange={e => formFunctions[0][props.questionNb](option)}
-                                                />
-                                            </Grid>
-                                        ))}
-                                    </Grid>
-                                </RadioGroup>
-                            </ThemeProvider>
-                        </FormGroup>
-                    </div>
-                    { props.questionNb > 0 &&
-                        <div className="absolute left-4 bottom-4">
-                            <ThemeProvider theme={theme}>
-                                <Button
-                                    variant="contained" 
-                                    startIcon={<ArrowBackIosIcon />}
-                                    onClick={goToPrevQuestion}
-                                >
-                                    <p>Prev</p>
-                                </Button>
-                            </ThemeProvider>
-                        </div>
-                    }
-                    <div className="absolute right-4 bottom-4">
-                        <ThemeProvider theme={theme}>
-                            <Button
-                                variant="contained" 
-                                endIcon={<ArrowForwardIosIcon />}
-                                onClick={goToNextQuestion}
-                            >
-                                {props.questionNb === (questions.length - 1) ?
-                                    <p>Get my Beer</p>
-                                :
-                                    <p>Next</p>
-                                }
-                            </Button>
-                        </ThemeProvider>
-                    </div>
-                </div>
-                <div className="z-0 absolute top-32 left-auto right-auto">
-                    <LiquidFillGauge
-                        style={{ margin: '0 auto' }}
-                        width={radius * 1}
-                        height={radius * 1}
-                        value={value}
-                        textSize={0}
-                        textOffsetX={0}
-                        textOffsetY={0}
-                        textRenderer={(props: any) => {
-                            const value = Math.round(props.value);
-                            const radius = Math.min(props.height / 2, props.width / 2);
-                            const textPixels = (props.textSize * radius / 2);
-                            const valueStyle = {
-                                fontSize: textPixels
-                            };
-                            const percentStyle = {
-                                fontSize: textPixels * 0.6
-                            };
-                            return (
-                                <tspan>
-                                    <tspan className="value" style={valueStyle}>{value}</tspan>
-                                    <tspan style={percentStyle}>{props.percent}</tspan>
-                                </tspan>
-                            );
-                        }}
-                        riseAnimation
-                        waveAnimation
-                        waveFrequency={2}
-                        waveAmplitude={1}
-                        gradient
-                        gradientStops={gradientStops}
-                        circleStyle={{
-                            fill: fillColor
-                        }}
-                        waveStyle={{
-                            fill: fillColor
-                        }}
-                        textStyle={{
-                            fill: color('#444').toString(),
-                            fontFamily: 'Arial'
-                        }}
-                        waveTextStyle={{
-                            fill: color('#fff').toString(),
-                            fontFamily: 'Arial'
-                        }}
-                    />
-                </div>
-            </div> */}

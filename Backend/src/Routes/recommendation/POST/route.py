@@ -52,6 +52,8 @@ def tranform_type(type: str) -> str:
         return "India Pale Ale"
     elif type == "Fruity":
         return "Fruit"
+    elif type == "Hybrid":
+        return "Hybrid/mixed Beer"
     else:
         return type
 
