@@ -22,8 +22,8 @@ class BeerReviewInfos:
         ''')
         self.total_reviews = len(query_result)
         if self.total_reviews == 0:
-            print(sum(map(lambda x: x[6], query_result)))
-            print(query_result)
+            # print(sum(map(lambda x: x[6], query_result)))
+            # print(query_result)
             return
         self.average_appearance = sum(map(lambda x: x[2], query_result)) / self.total_reviews
         self.average_aroma = sum(map(lambda x: x[3], query_result)) / self.total_reviews

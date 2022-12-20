@@ -1,3 +1,4 @@
+import os
 from flask import Flask
 from flask_cors import CORS
 import socket
@@ -21,5 +22,5 @@ def create_app() -> Flask:
 
 if __name__ == '__main__':
     app = create_app()
-
-    app.run(port=3001, debug=False)
+    debug: bool = bool(os.getenv("DEBUG", False) == "True")
+    app.run(port=3001, debug=debug)

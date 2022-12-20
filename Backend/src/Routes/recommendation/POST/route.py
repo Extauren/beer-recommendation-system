@@ -118,8 +118,6 @@ def recommendation_post():
         new_recommended_beer_list.append((*beer[0:10], beer[10] - (0 if re.search(
             tranform_type(survey["type"]), beer[7], re.IGNORECASE) else 25)))
     connection.close()
-    for i in rate_beer:
-        print(i.average_overall)
     return jsonify([{
         "id": beer[0],
         "name": beer[1],
