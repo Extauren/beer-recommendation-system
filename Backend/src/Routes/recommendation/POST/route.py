@@ -70,7 +70,7 @@ def change_abv_value(survey: dict, connection, ibuMin, ibuMax) -> list:
         "Normal": "Strong",
         "Strong": "Normal"
     }
-    abvMin, abvMax = get_abv_min_and_max(map_increase_abv(survey["abv"]))
+    abvMin, abvMax = get_abv_min_and_max(survey["abv"])
     return get_type(tranform_type(survey["type"]), abvMin, abvMax, ibuMin, ibuMax, get_is_organic(survey["organic"]), connection)
 
 
@@ -87,7 +87,7 @@ def change_ibu_value(survey: dict, connection, abvMin, abvMax) -> list:
 @bp.route("/recommendation", methods=(['POST']))
 def recommendation_post():
     survey = request.get_json(force=True)
-
+    rate_beer = []
     connection = connect_to_database()
     abvMin, abvMax = get_abv_min_and_max(survey["abv"])
     ibuMin, ibuMax = get_ibu_min_and_max(survey["ibu"])
@@ -98,7 +98,7 @@ def recommendation_post():
         beer_list) >= 5 else len(beer_list))
 
     if len(random_recommended_beer) < 5:
-        beer_list = change_abv_value(survey, connection)
+        beer_list = change_abv_value(survey, connection, ibuMin, ibuMax)
         beer_list = [(*elem[0:10], elem[10] - 25) for elem in random.sample(beer_list, 5 - len(random_recommended_beer) if len(beer_list) >= 5 - len(random_recommended_beer) else len(beer_list))]
         random_recommended_beer += beer_list
 
@@ -107,12 +107,10 @@ def recommendation_post():
         beer_list = [(*elem[0:10], elem[10] - 25) for elem in random.sample(beer_list, 5 - len(random_recommended_beer) if len(beer_list) >= 5 - len(random_recommended_beer) else len(beer_list))]
         random_recommended_beer += beer_list
 
+    rate_beer = [BeerReviewInfos(connection, beer[1], survey["rateBeer"]) for beer in random_recommended_beer]
     beer_notes: dict[str, int] = {
         beer.name: n
-        for n, beer in enumerate(sorted(
-            [BeerReviewInfos(connection, beer[1]) for beer in
-             random_recommended_beer],
-            key=lambda beer: beer.average_overall, reverse=True))}
+        for n, beer in enumerate(sorted(rate_beer,key=lambda beer: beer.average_overall, reverse=True))}
     recommended_beer_list: list[tuple] = random_recommended_beer.copy()
     for beer in random_recommended_beer:
         recommended_beer_list[beer_notes[beer[1]]] = beer
@@ -121,6 +119,8 @@ def recommendation_post():
         new_recommended_beer_list.append((*beer[0:10], beer[10] - (0 if re.search(
             tranform_type(survey["type"]), beer[7], re.IGNORECASE) else 25)))
     connection.close()
+    for i in rate_beer:
+        print(i.average_overall)
     return jsonify([{
         "id": beer[0],
         "name": beer[1],
@@ -132,5 +132,6 @@ def recommendation_post():
         "style": beer[7],
         "type": beer[8],
         "organic": beer[9],
-        "percentage": beer[10]
-    } for beer in new_recommended_beer_list]), 200
+        "percentage": beer[10],
+        "note": rate_beer[index].average_overall
+    } for index, beer in enumerate(new_recommended_beer_list)]), 200

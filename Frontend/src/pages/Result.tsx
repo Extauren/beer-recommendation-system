@@ -9,6 +9,7 @@ import axios from 'axios';
 export default function Result() {
     const [index, setIndex] = React.useState<number>(0);
     const {state} = useLocation();
+    const setSendReview = React.useState<any>(state.setSendReview);
     const [result, setResult] = React.useState<any>(state.result[index]);
     const [length, setLength] = React.useState<number>(state.result.length);
     const [userEval, setUserEval] = React.useState<string>("");
@@ -21,8 +22,7 @@ export default function Result() {
       });
 
     React.useEffect(() => {
-        console.log(state.result);
-        console.log(result.ibu)
+        // state.setSendReview("test");
     }, [])
 
     const sendReview = async () => {
@@ -30,6 +30,7 @@ export default function Result() {
             "beer_id": result.id, "user_evaluation": userEval
         }).then((response: any) => {
             console.log(response);
+            //setSendReview("Thank you for reviewing your recommendation")
             setUserEval("");
         }).catch((error: any) => {
             console.log(error);
@@ -89,7 +90,7 @@ export default function Result() {
                             <div>{result.ibu}</div>
                         </div>
                         <div>
-                            <div className="font-bold mt-4">Percentage :</div>
+                            <div className="font-bold mt-4">Recommendation percentage :</div>
                             <p>{result.percentage} %</p>
                         </div>
                     </Grid>

@@ -17,14 +17,14 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 export default function Questionnaire(props: any) {
     const navigate = useNavigate();
-    const [questions, setQuestion] = React.useState<any>(["What type of beer do you want ?", "How much alcohol do you want ?", "Do you want organic beer ?", "How much ibu do you want ?"]);
-    const [options, setOptions] = React.useState<any>([["Lager", "Stout", "White", "Amber", "IPA", "Fruity", "Hybrid"], ["Lite", "Normal", "Strong"], ["Yes", "No"], ["Low", "Medium", "Hight"]]);
+    const [questions, setQuestion] = React.useState<any>(["What type of beer do you want ?", "How much alcohol do you want ?", "Do you want organic beer ?", "How much ibu do you want ?", "Minimum note from RateBeer"]);
+    const [options, setOptions] = React.useState<any>([["Lager", "Stout", "White", "Amber", "IPA", "Fruity", "Hybrid"], ["Lite", "Normal", "Strong"], ["Yes", "No"], ["Low", "Medium", "Hight"], ['0', '5', '10', '15']]);
     const [beerType, setBeerType] = React.useState<string>("");
     const [alcohol, setAlcohol] = React.useState<string>("");
     const [isOrganic, setIsOrganinc] = React.useState<string>("");
     const [ibu, setIbu] = React.useState<string>("");
-    const formValues = React.useState<Array<any>>([beerType, alcohol, isOrganic, ibu]);
-    const formFunctions = React.useState<Array<React.Dispatch<React.SetStateAction<string>>>>([setBeerType, setAlcohol, setIsOrganinc, setIbu]);
+    const [rateBeer, setRateBeer] = React.useState<string>("");
+    const formFunctions = React.useState<Array<React.Dispatch<React.SetStateAction<string>>>>([setBeerType, setAlcohol, setIsOrganinc, setIbu, setRateBeer]);
     const [radius, setRadius] = React.useState<number>(550);
     const [value, setValue] = React.useState<number>(100 / (questions.length + 2));
     const [test, setTest] = React.useState<number>(100 / (questions.length + 2));
@@ -77,10 +77,10 @@ export default function Questionnaire(props: any) {
             setValue(value + test);
             setIsSearching(true);
             axios.post("/recommendation", {
-                "type": beerType, "organic": isOrganic, "abv": alcohol, "ibu": ibu
+                "type": beerType, "organic": isOrganic, "abv": alcohol, "ibu": ibu, "rateBeer": rateBeer
             }).then((result: any) => {
                 console.log(result.data)
-                navigate("/result", {replace: false, state: {'result': result.data, 'setSendReview': props.setSendReview}});
+                navigate("/result", {replace: false, state: {'result': result.data}});
             }).catch((error: any) => {
                 console.log(error)
             });
@@ -88,7 +88,7 @@ export default function Questionnaire(props: any) {
     }
 
     const checkIfValuesAreEmpty = () => {
-        if (beerType === "" || alcohol === "" || isOrganic === "" || ibu === "")
+        if (beerType === "" || alcohol === "" || isOrganic === "" || ibu === "" || rateBeer === "")
             return true;
         return false;
     }

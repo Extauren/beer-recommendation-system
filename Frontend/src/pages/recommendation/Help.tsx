@@ -97,7 +97,7 @@ export default function Help(props: any) {
                 "message": "Highter than 50"
             }
 
-        ],[]]);
+        ],[],[]]);
 
     return (
         <div className="w-3/4 flex justify-center">
