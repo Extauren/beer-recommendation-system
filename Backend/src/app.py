@@ -16,7 +16,7 @@ def create_app() -> Flask:
     app.register_blueprint(recommendation)
     app.register_blueprint(evaluation)
     app.register_blueprint(beer_note)
-    CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}},
+    CORS(app, resources={r"/*": {"origins": "https://glouglou.camille-eip.com"}},
          supports_credentials=True)
 
     return app
