@@ -15,9 +15,9 @@ def add_evaluation_to_beer():
 
     sentiment = recommendation_user_evaluation_post(user_eval["user_evaluation"]) # Maybe we'll change the request field, we should ask the frontend team
     connection = connect_to_database()
-    if sentiment == "positive":
+    if sentiment == "Positive":
         increase_beer_evaluation(connection, user_eval["beer_id"])
-    elif sentiment == "negative":
+    elif sentiment == "Negative":
         decrease_beer_evaluation(connection, user_eval["beer_id"])
     else: # neutral
         pass
@@ -33,4 +33,4 @@ def recommendation_user_evaluation_post(user_eval: str):
         frequency_penalty=0.5,
         presence_penalty=0.0
     )
-    return response["choices"][0]["text"][1:], 201
+    return response["choices"][0]["text"][1:]

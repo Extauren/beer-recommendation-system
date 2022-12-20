@@ -13,6 +13,7 @@ export default function Result() {
     const [result, setResult] = React.useState<any>(state.result[index]);
     const [length, setLength] = React.useState<number>(state.result.length);
     const [userEval, setUserEval] = React.useState<string>("");
+    const [userEvaluation, setUserEvaluation] = React.useState<Array<number>>([0, 1, 2, 3, 4]);
     const theme = createTheme({
         palette: {
           primary: {
@@ -24,6 +25,10 @@ export default function Result() {
     React.useEffect(() => {
         // state.setSendReview("test");
     }, [])
+
+    const getUserEval = () => {
+
+    }
 
     const sendReview = async () => {
         await axios.post("/recommendation/user_evaluation", {
@@ -53,7 +58,7 @@ export default function Result() {
             <div className="mt-20 mb-6">
                 <Grid container spacing={4}>
                     <Grid item className="w-1/2">
-                        <div className="flex justify-center">
+                        <div className="flex justify-center mt-32">
                             <img src={result.icon} />
                         </div>
                     </Grid>
@@ -87,11 +92,15 @@ export default function Result() {
                         </div>
                         <div>
                             <div className="font-bold mt-4">IBU :</div>
-                            <div>{result.ibu}</div>
+                            <div>{result.ibu} / 120</div>
                         </div>
                         <div>
                             <div className="font-bold mt-4">Recommendation percentage :</div>
                             <p>{result.percentage} %</p>
+                        </div>
+                        <div>
+                            <div className="font-bold mt-4">User evaluation :</div>
+                            <p>{userEvaluation[index]} points</p>
                         </div>
                     </Grid>
                 </Grid>

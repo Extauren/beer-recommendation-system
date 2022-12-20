@@ -17,13 +17,13 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 export default function Questionnaire(props: any) {
     const navigate = useNavigate();
-    const [questions, setQuestion] = React.useState<any>(["What type of beer do you want ?", "How much alcohol do you want ?", "Do you want organic beer ?", "How much ibu do you want ?", "Minimum note from RateBeer"]);
-    const [options, setOptions] = React.useState<any>([["Lager", "Stout", "White", "Amber", "IPA", "Fruity", "Hybrid"], ["Lite", "Normal", "Strong"], ["Yes", "No"], ["Low", "Medium", "Hight"], ['0', '5', '10', '15']]);
+    const [questions, setQuestion] = React.useState<any>(["What type of beer do you want ?", "How much alcohol do you want ?", "Do you want organic beer ?", "How much ibu do you want ?"]); //, "Minimum note from RateBeer"]);
+    const [options, setOptions] = React.useState<any>([["Lager", "Stout", "White", "Amber", "IPA", "Fruity"], ["Lite", "Normal", "Strong"], ["Yes", "No"], ["Low", "Medium", "High"]]); //, ['0', '5', '10', '15']]);
     const [beerType, setBeerType] = React.useState<string>("");
     const [alcohol, setAlcohol] = React.useState<string>("");
     const [isOrganic, setIsOrganinc] = React.useState<string>("");
     const [ibu, setIbu] = React.useState<string>("");
-    const [rateBeer, setRateBeer] = React.useState<string>("");
+    const [rateBeer, setRateBeer] = React.useState<string>("0");
     const formFunctions = React.useState<Array<React.Dispatch<React.SetStateAction<string>>>>([setBeerType, setAlcohol, setIsOrganinc, setIbu, setRateBeer]);
     const [radius, setRadius] = React.useState<number>(550);
     const [value, setValue] = React.useState<number>(100 / (questions.length + 2));

@@ -23,10 +23,7 @@ export default function Help(props: any) {
             }, {
                 "title": "Fruity",
                 "message": "A fruit beer’s appearance should showcase the base beer style. In beers of a lighter color, such as lagers, the liquid may take on a shade of color, similar to, but often lighter than the color of the actual fruit. The head may also take on tinges of the fruit color. The beer can be hazy, whether this quality is perceived as ok or undesirable, depends on both the fruit used and the underlying beer style."
-            }, {
-                "title": "Hybrid",
-                'message': "Hybrid beers do not follow the conventional thought that all beer is either an ale or a lager. Instead, hybrids borrow brewing practices from both types of beer; they're a little lager and a little ale. For instance, a beer fermented with ale yeast may be held at cooler temperatures typically reserved for lagers, or a lager yeast beer may be brewed as quickly and warm as an ale. This brewing technique imparts the characteristics of both beer categories to create unique styles that are not easily classified. Kolsch, altbier, steam beer, and cream ale are most commonly thought of as hybrid beers."
-            }
+            },
         ],
         [
             {
@@ -97,7 +94,7 @@ export default function Help(props: any) {
                 "message": "Highter than 50"
             }
 
-        ],[],[]]);
+        ],[]]);
 
     return (
         <div className="w-3/4 flex justify-center">
