@@ -9,12 +9,15 @@ def beer_note():
     beer_list_id = request.get_json(force=True)
     beer_note = {}
 
-    beer_list_id = beer_list_id["beerID"]
+    beer_list_id = beer_list_id["beerId"]
     print(beer_list_id)
     connection = connect_to_database()
     for i in range(0, len(beer_list_id)):
         print(read_query(connection, "SELECT * FROM User_evaluation WHERE beer_id = {}".format(beer_list_id[i])))
-        beer_note[i] = read_query(connection, "SELECT * FROM User_evaluation WHERE beer_id = {}".format(beer_list_id[i]))
+        test = read_query(connection, "SELECT * FROM User_evaluation WHERE beer_id = {}".format(beer_list_id[i]))
+        id, note = test[0]
+        print(note)
+        beer_note[i] = note
     connection.close()
 
     return beer_note, 201

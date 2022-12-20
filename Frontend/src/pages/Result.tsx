@@ -13,7 +13,7 @@ export default function Result() {
     const [result, setResult] = React.useState<any>(state.result[index]);
     const [length, setLength] = React.useState<number>(state.result.length);
     const [userEval, setUserEval] = React.useState<string>("");
-    const [userEvaluation, setUserEvaluation] = React.useState<Array<number>>([0, 1, 2, 3, 4]);
+    const [userEvaluation, setUserEvaluation] = React.useState<Array<number>>([]);
     const theme = createTheme({
         palette: {
           primary: {
@@ -23,20 +23,28 @@ export default function Result() {
       });
 
     React.useEffect(() => {
-        // state.setSendReview("test");
+        getUserEval();
     }, [])
 
     const getUserEval = () => {
-
+        var beerId: Array<number> = []
+        for (var i = 0; i < length; i++) {
+            beerId[i] = state.result[i].id
+        }
+        axios.post('/recommendation/beer_note', {
+            'beerId': beerId
+        }).then((response: any)=> {
+            setUserEvaluation(response.data);
+        })
     }
 
     const sendReview = async () => {
         await axios.post("/recommendation/user_evaluation", {
             "beer_id": result.id, "user_evaluation": userEval
         }).then((response: any) => {
-            console.log(response);
             //setSendReview("Thank you for reviewing your recommendation")
             setUserEval("");
+            getUserEval();
         }).catch((error: any) => {
             console.log(error);
         });
