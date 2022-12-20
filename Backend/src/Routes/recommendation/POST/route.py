@@ -70,7 +70,7 @@ def change_abv_value(survey: dict, connection, ibuMin, ibuMax) -> list:
         "Normal": "Strong",
         "Strong": "Normal"
     }
-    abvMin, abvMax = get_abv_min_and_max(survey["abv"])
+    abvMin, abvMax = get_abv_min_and_max(map_increase_abv[survey["abv"]])
     return get_type(tranform_type(survey["type"]), abvMin, abvMax, ibuMin, ibuMax, get_is_organic(survey["organic"]), connection)
 
 
@@ -87,14 +87,13 @@ def change_ibu_value(survey: dict, connection, abvMin, abvMax) -> list:
 @bp.route("/recommendation", methods=(['POST']))
 def recommendation_post():
     survey = request.get_json(force=True)
-    rate_beer = []
+    random_recommended_beer: list = []
     connection = connect_to_database()
     abvMin, abvMax = get_abv_min_and_max(survey["abv"])
     ibuMin, ibuMax = get_ibu_min_and_max(survey["ibu"])
     beer_list = get_type(tranform_type(survey["type"]), abvMin, abvMax, ibuMin, ibuMax, get_is_organic(survey["organic"]), connection)
-    if not beer_list:
-        return [], 200
-    random_recommended_beer: list = random.sample(beer_list, 5 if len(
+    if beer_list:
+        random_recommended_beer: list = random.sample(beer_list, 5 if len(
         beer_list) >= 5 else len(beer_list))
 
     if len(random_recommended_beer) < 5:
@@ -103,7 +102,7 @@ def recommendation_post():
         random_recommended_beer += beer_list
 
     if len(random_recommended_beer) < 5:
-        beer_list = change_ibu_value(survey, connection)
+        beer_list = change_ibu_value(survey, connection, abvMin, abvMax)
         beer_list = [(*elem[0:10], elem[10] - 25) for elem in random.sample(beer_list, 5 - len(random_recommended_beer) if len(beer_list) >= 5 - len(random_recommended_beer) else len(beer_list))]
         random_recommended_beer += beer_list
 
