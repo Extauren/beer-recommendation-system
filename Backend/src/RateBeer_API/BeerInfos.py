@@ -18,8 +18,9 @@ class BeerReviewInfos:
     def __init__(self, connection: MySQLConnection, name: str, rate: str):
         self.name = name
         query_result: list[tuple] = read_query(connection, f'''
-            SELECT * FROM Review WHERE beer_name LIKE "%{name}%" AND overall >= "%{int(rate)}%"
+            SELECT * FROM Review WHERE beer_name LIKE "%{name}%"
         ''')
+        # AND overall >= "%{int(rate)}%"
         self.total_reviews = len(query_result)
         if self.total_reviews == 0:
             # print(sum(map(lambda x: x[6], query_result)))
