@@ -5,8 +5,13 @@ import Recommendation from './pages/recommendation/Recommendation';
 import Result from './pages/Result';
 import Layout from './Layout';
 
+export const api = axios.create({
+  baseURL: process.env.REACT_APP_API_URL,
+  timeout: 1000,
+});
+
 export default function App() {
-  axios.defaults.baseURL = 'http://localhost:3001';
+  axios.defaults.baseURL = process.env.REACT_APP_API_URL;
 
   return (
     <BrowserRouter>
