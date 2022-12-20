@@ -5,7 +5,8 @@ import socket
 
 from src.Routes.recommendation.POST.route import bp as recommendation
 from src.Routes.recommendation.user_evaluation.POST.route import \
-    bp as evualuation
+    bp as evaluation
+from src.Routes.recommendation.beer_note.POST.route import bp as beer_note
 
 
 def create_app() -> Flask:
@@ -13,7 +14,8 @@ def create_app() -> Flask:
 
     # socket.setdefaulttimeout(200)
     app.register_blueprint(recommendation)
-    app.register_blueprint(evualuation)
+    app.register_blueprint(evaluation)
+    app.register_blueprint(beer_note)
     CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}},
          supports_credentials=True)
 
